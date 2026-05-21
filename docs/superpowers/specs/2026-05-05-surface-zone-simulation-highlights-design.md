@@ -1,140 +1,49 @@
-# Building Surface Zone Highlights On Simulation Viewers
+# 표면 구역 시뮬레이션 강조 표시(Surface Zone Simulation Highlights) 설계 사양서
 
-## Goal
+**날짜:** 2026-05-05
+**상태:** 초안
+**범위:** `app/frontend` (React + Three.js)
 
-Show building surface zones in the Solar, View, and Landmark 3D simulation viewers without reducing the readability of simulation results. Horizontal zones should continue to render as existing zone outlines. Building surface zones should become visible in simulation viewers as non-obscuring annotations.
+---
 
-The approved visual direction is boundary-only marking for building-surface simulation results: selected surfaces are identified by their outer selected-surface boundaries, not by filled faces and not by dense mesh edge overlays.
+## 1. 개요
 
-## Current Context
+시뮬레이션 결과(Solar, View, Landmark)를 시각화할 때, 정의된 **건물 표면 구역(Surface Zones)**을 3D 뷰어에서 강조 표시하는 기능을 설계합니다. 이는 사용자가 시뮬레이션 데이터 수치와 해당 수치가 집계된 물리적 위치를 동시에 인지할 수 있도록 돕습니다.
 
-`SceneViewer` is shared by the Zoning tab and the simulation tabs. It already renders simulation overlays, horizontal `ZoneOutlines`, optional building highlights, and the `SurfaceSelectionLayer` used by Zoning.
+## 2. 목표
 
-`ZoningTab` currently fetches `/buildings/surfaces`, converts `face_to_surface` into `SurfaceFaceMeta[]`, and passes building surface zones to `SceneViewer.surfaceSelection`. The simulation tabs already pass `zones` and `showZones` into `SceneViewer`, but they do not fetch surface geometry or pass `surfaceSelection`, so building surface zones are missing from the simulation 3D viewers.
+- 시뮬레이션 탭(Solar, View, Landmark)에서 활성화된 표면 구역을 시각적으로 강조합니다.
+- 시뮬레이션 결과의 색상 정보를 가리지 않으면서 구역의 경계를 명확히 표시합니다.
+- 여러 구역이 존재하는 경우, 각 구역의 고유 색상을 활용하여 구분합니다.
 
-## Architecture
+## 3. 시각적 전략
 
-Keep zone ownership in the existing tab/App state and keep rendering responsibility in `SceneViewer` and its Three.js layers.
+### 3.1 외곽선(Outline) 렌더링
+시뮬레이션 데이터는 면(face)의 색상으로 표현되므로, 구역 강조는 면 전체를 덮는 방식이 아닌 **외곽선(Edge/Outline)** 방식으로 구현합니다.
 
-Extend the existing surface-zone rendering path rather than creating a separate simulation-only overlay system. `SurfaceSelectionLayer` should support two display modes:
+- **색상:** 구역 정의 시 지정된 색상을 사용합니다.
+- **두께:** 시인성을 확보할 수 있는 적절한 두께(예: 2-3px)를 유지합니다.
+- **방식:** 선택된 면들의 집합에서 외부 경계선만을 추출하여 강조합니다.
 
-- `fill`: existing Zoning behavior with translucent selected surface faces.
-- `boundary`: simulation-viewer behavior with selected-surface boundaries only.
+### 3.2 반투명 오버레이 (선택 사항)
+사용자가 통계 테이블에서 특정 구역 위에 마우스를 올렸을 때(hover), 해당 구역의 면들을 옅은 반투명 색상으로 덮어 강조 효과를 극대화합니다.
 
-Simulation tabs should continue using their existing `Show zones in 3D` checkbox. When enabled, it should show both horizontal zone outlines and building surface zone boundary marks. No new checkbox is needed in the first version.
+## 4. 기술적 구현
 
-## Components And Boundaries
+### 4.1 데이터 흐름
+1. `App.tsx`에서 관리되는 `zones` 상태를 시뮬레이션 탭으로 전달합니다.
+2. `SceneViewer`는 활성 시뮬레이션 유형에 따라 관련 있는 `surface` 구역들을 렌더링 목록에 포함합니다.
 
-### Shared Surface Selection Hook
+### 4.2 렌더링 최적화
+- **LineSegments:** Three.js의 `LineSegments` 또는 `EdgesGeometry`를 활용하여 경계선을 효율적으로 렌더링합니다.
+- **Depth Test:** 강조 표시가 건물 내부에 파묻히지 않도록 약간의 `polygonOffset`을 적용하거나 `depthTest: false`를 고려합니다.
 
-Introduce a small shared hook or helper, likely `useSurfaceZoneSelection`, used by Zoning and simulation tabs. It should:
+## 5. 인터랙션 디자인
 
-- fetch `/buildings/surfaces` only when a model exists and surface-zone marks are needed;
-- convert the response's `face_to_surface` map into `SurfaceFaceMeta[]`;
-- filter `Zone[]` to `BuildingSurfaceZone[]`;
-- return the `surfaceSelection` payload expected by `SceneViewer`;
-- accept a display mode so callers choose `fill` or `boundary`.
+- **자동 표시:** 시뮬레이션 탭에 진입하면 해당 시뮬레이션 타겟(예: Building)에 해당하는 모든 표면 구역이 자동으로 강조 표시됩니다.
+- **토글 기능:** 사이드바의 통계 테이블 옆에 있는 눈 아이콘을 클릭하여 개별 구역의 강조 표시를 켜거나 끌 수 있습니다.
+- **강조 동기화:** 통계 테이블의 행을 클릭하면 3D 뷰어의 시점이 해당 구역으로 이동하거나 일시적으로 깜빡이는 효과를 줍니다.
 
-This avoids duplicating surface-geometry fetch and DTO conversion logic in Solar, View, Landmark, and Zoning.
+## 6. 기대 효과
 
-### SceneViewer
-
-`SceneViewer.surfaceSelection` should remain the public bridge into surface-zone rendering. Its payload should include:
-
-```ts
-type SurfaceSelectionDisplayMode = 'fill' | 'boundary';
-
-interface SurfaceSelectionLayerSpec {
-	id: string;
-	color: string;
-	selectors: SurfaceSelector[];
-	active: boolean;
-}
-
-interface SceneSurfaceSelectionSpec {
-	surfaceChunk: MeshChunkDto | null;
-	faceToSurface: SurfaceFaceMeta[];
-	zones: SurfaceSelectionLayerSpec[];
-	enabled: boolean;
-	displayMode: SurfaceSelectionDisplayMode;
-}
-```
-
-`SceneViewer` should not need to know whether the caller is Solar, View, Landmark, or Zoning. It should forward the display mode to `SurfaceSelectionLayer`.
-
-### SurfaceSelectionLayer
-
-`SurfaceSelectionLayer` should keep selector semantics unchanged:
-
-- `whole`: all faces of a building;
-- `roof`: roof faces only;
-- `all_walls`: wall faces only;
-- `wall_orientation`: walls in one orientation;
-- `faces`: specific face keys;
-- `exclude_faces`: excluded from the positive selection.
-
-In `fill` mode, preserve the current translucent face rendering.
-
-In `boundary` mode, render only selected-surface boundary marks. Do not fill selected faces and do not draw all mesh edges.
-
-## Boundary Rendering Behavior
-
-Boundary mode should first determine the selected triangle set for each surface-zone layer. From that selected set, build boundary edges by counting triangle edges: an edge is a boundary edge when it appears only once in the selected set after vertex-key normalization. Edges shared by two selected triangles are internal and must not be drawn.
-
-Boundary marks should use each zone's existing color. To preserve legibility over arbitrary colormaps, draw a thin contrast halo behind the colored line, such as a slightly wider dark or light line, then the dashed zone-color line above it.
-
-For building-surface simulation results, the default should be boundary-only marks with no face fill. Do not add anchor points in the first implementation; they are reserved for a later UX iteration if manual verification shows boundary lines are still hard to find.
-
-Boundary mode requirements:
-
-- no face fill in boundary mode;
-- thin dashed colored boundary line;
-- contrast halo drawn as a black line behind the colored line, wider than the colored line and partially transparent;
-- `depthTest={false}` and `depthWrite={false}` so zone marks remain visible;
-- render above the simulation mesh;
-- avoid dense internal triangle edges.
-
-## Simulation Tab Behavior
-
-Solar, View, and Landmark tabs should pass surface-zone marks to `SceneViewer` when all of these are true:
-
-- a model exists;
-- `Show zones in 3D` is enabled;
-- there is at least one `building_surface` zone;
-- `/buildings/surfaces` returned usable geometry.
-
-Usable surface geometry means: `surfaceChunk` exists, `surfaceChunk.positions` contains at least one triangle, `faceToSurface` contains at least one metadata entry, and at least one building-surface zone has selectors. A zone that selects no matching faces should simply render no boundary marks; it should not be treated as a fatal error.
-
-The behavior should apply to both ground-level and building-surface simulation targets. The first implementation should use boundary mode for both, because it is conservative and avoids surprising color mixing. If a later version needs stronger context for ground-level results, it can add a separate visual tuning option after the base behavior is proven.
-
-Horizontal zones continue to render through `ZoneOutlines` as they do today.
-
-## Error Handling
-
-Surface-zone rendering must not block simulation viewing. If `/buildings/surfaces` fails or returns no usable geometry in a simulation tab, the tab should continue rendering the simulation and horizontal zones. Building surface zone marks should silently be absent.
-
-This quiet failure behavior is specific to simulation viewers, where the primary user task is reading simulation output. Zoning can keep its current behavior and controls.
-
-## Testing And Verification
-
-Automated tests should focus on shared logic:
-
-- unit-test selected-face boundary extraction so internal triangle edges are omitted and only outer selected-set edges remain;
-- unit-test selector behavior for `whole`, `roof`, `all_walls`, `wall_orientation`, `faces`, and `exclude_faces` in the shared surface selection logic;
-- type-check the expanded `surfaceSelection` payload and all tab call sites.
-
-Manual/browser verification should cover:
-
-- building surface zones visible in Solar, View, and Landmark simulation viewers when `Show zones in 3D` is enabled;
-- building-surface simulation results remain readable because zone marks do not fill faces and do not show dense internal mesh edges;
-- horizontal zone outlines continue to work;
-- disabling `Show zones in 3D` hides both horizontal and building-surface zone marks;
-- simulation viewers still render if surface-zone geometry fetch fails.
-
-## Non-Goals
-
-- No separate per-zone visibility UI in the first version.
-- No dense wireframe overlay for all selected mesh triangles.
-- No simulation-specific backend endpoint for zone visualization unless existing `/buildings/surfaces` proves insufficient.
-- No changes to zone statistics behavior.
-- No changes to the simulation computation itself.
+이 기능을 통해 사용자는 방대한 시뮬레이션 데이터 속에서 자신이 관심 구역으로 설정한 지점의 성능을 시각적으로 즉각 연결하여 분석할 수 있습니다.

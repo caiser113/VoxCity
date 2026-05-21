@@ -1,87 +1,73 @@
-# Zoning Tab — Design Spec
+# Zoning(조닝) 탭 — 설계 사양서
 
-**Date:** 2026-04-30
-**Status:** Draft (pre-implementation)
-**Scope:** `app/` (FastAPI backend + React frontend)
+**날짜:** 2026-04-30
+**상태:** 초안 (구현 전)
+**범위:** `app/` (FastAPI 백엔드 + React 프런트엔드)
 
 ---
 
-## 1. Goal
+## 1. 목표
 
-Add a **Zoning** tab to the VoxCity web app that lets the user define one or
-more 2D footprint zones over the current model. Each subsequent simulation tab
-(Solar, View, Landmark) then displays per-zone summary statistics computed
-from its cached results, plus a 3D outline of each zone in the model viewer.
+VoxCity 웹 앱에 **Zoning(조닝)** 탭을 추가하여 사용자가 현재 모델 위에 하나 이상의 2D 풋프린트(footprint) 구역을 정의할 수 있도록 합니다. 이후의 각 시뮬레이션 탭(Solar, View, Landmark)은 캐시된 결과로부터 계산된 구역별 요약 통계와 모델 뷰어에서의 각 구역에 대한 3D 외곽선을 표시합니다.
 
-## 2. Non-goals (v1)
+## 2. 비목표 (v1)
 
-- 3D-volume zones (z-min / z-max per zone)
-- Categories / tags for grouping zones
-- Building-group zones (zone defined by selecting building footprints)
-- Per-zone histograms or percentile statistics
-- Backend persistence of zones (saved across page reloads or restarts)
-- Importing zones from GeoJSON / Shapefile
-- Real "always-on-top" rendering through occluders (Plotly limitation)
+- 3D 볼륨 구역 (구역별 z-min / z-max)
+- 구역 그룹화를 위한 카테고리 / 태그
+- 건물 그룹 구역 (건물 풋프린트를 선택하여 정의된 구역)
+- 구역별 히스토그램 또는 백분위수 통계
+- 구역의 백엔드 지속성 (페이지 새로고침 또는 재시작 시 유지되지 않음)
+- GeoJSON / Shapefile에서 구역 가져오기
+- 오클루더(occluder)를 통한 실제 "항상 위에 표시(always-on-top)" 렌더링 (Plotly 제한 사항)
 
-These are intentionally deferred and the data model leaves room to add them
-later without breaking the v1 contract.
+이러한 항목들은 의도적으로 연기되었으며, 데이터 모델은 v1 계약을 깨지 않고 나중에 추가할 수 있는 여지를 남겨둡니다.
 
-## 3. User stories
+## 3. 사용자 스토리
 
-1. *As a researcher,* after generating a model I open the **Zoning** tab,
-   draw a rotated rectangle around a courtyard, and a polygon along a street.
-   I see both zones outlined on the 2D map and as colored vertical curtains
-   in the 3D viewer.
-2. *I run a Solar simulation.* On the Solar tab I see, beneath the run
-   controls, a table with `count, mean, min, max, std` of irradiance for each
-   zone, plus the same zone outlines drawn over the colored 3D result.
-3. *I tweak a zone* (rename, recolor, delete, draw a new one) on the Zoning
-   tab and return to Solar — the table refreshes against the existing sim
-   result without re-running it.
-4. *I change the target area* on the Target Area tab — my zones are cleared
-   (they belonged to a different region).
+1. *연구자로서,* 모델을 생성한 후 **Zoning** 탭을 열고, 중정 주위에 회전된 직사각형을 그리고 거리 위를 따라 폴리곤을 그립니다. 2D 지도에 외곽선으로 표시된 두 구역과 3D 뷰어에서 유색 수직 커튼으로 표시된 구역을 확인합니다.
+2. *일사량(Solar) 시뮬레이션을 실행합니다.* Solar 탭의 실행 컨트롤 아래에서 각 구역에 대한 일사량의 `count, mean, min, max, std`가 포함된 테이블을 확인하고, 색상이 입혀진 3D 결과 위에 그려진 동일한 구역 외곽선을 확인합니다.
+3. *Zoning 탭에서 구역을 수정합니다* (이름 변경, 색상 변경, 삭제, 새 구역 그리기). 다시 Solar 탭으로 돌아오면 시뮬레이션을 재실행하지 않고도 기존 결과에 대해 테이블이 새로 고쳐집니다.
+4. *Target Area 탭에서 대상 영역을 변경합니다* — 내 구역들이 삭제됩니다 (다른 지역에 속해 있었기 때문).
 
-## 4. Architectural decisions
+## 4. 아키텍처 결정
 
-| Decision | Choice | Rationale |
+| 결정 사항 | 선택 | 근거 |
 | --- | --- | --- |
-| Zone shape | 2D polygon footprint (no height range) | Simplest model that covers the dominant use case; aggregates cleanly against existing `last_sim_grid` / `last_sim_mesh` caches. |
-| Drawing primitives | Rotated rectangle (default) + polygon | Matches existing `EditTab` building-draw primitives in `PlanMapEditor`. No new primitives needed. |
-| Multiple zones | Flat list, auto-named "Zone N", overlap allowed | Matches the rest of the app; categories add UI weight without evidence of need. |
-| Persistence | Frontend state in `App.tsx`, lon/lat polygons | Survives Edit/Generation re-runs; cleared when target rectangle changes. Mirrors existing patterns (`rectangle`, `figureJson`, edits buffer). |
-| Stats compute | New stateless `POST /api/zones/stats` | Single endpoint; sim handlers untouched; supports "edit zones without re-running sim". |
-| Tab order | `Area · Generation · Edit · Zoning · Solar · View · Landmark · Export` | Natural flow; same `hasModel` gating as other post-model tabs. |
-| Layout | `.three-col` shell (config | 2D editor | 3D viewer) | Mirrors `EditTab`. |
+| 구역 형상 | 2D 폴리곤 풋프린트 (높이 범위 없음) | 지배적인 사용 사례를 충족하는 가장 단순한 모델이며, 기존의 `last_sim_grid` / `last_sim_mesh` 캐시에 대해 깔끔하게 집계됩니다. |
+| 그리기 기본 도형 | 회전된 직사각형 (기본값) + 폴리곤 | `PlanMapEditor`의 기존 `EditTab` 건물 그리기 기본 도형과 일치합니다. 새로운 기본 도형이 필요하지 않습니다. |
+| 다중 구역 | 평면 리스트, 자동 명명 "Zone N", 중첩 허용 | 앱의 나머지 부분과 일치합니다. 카테고리는 필요성 근거 없이 UI 무게만 가중시킵니다. |
+| 지속성 | `App.tsx`의 프런트엔드 상태, 경위도(lon/lat) 폴리곤 | 편집/생성 재실행 시에도 유지됩니다. 대상 직사각형이 변경되면 삭제됩니다. 기존 패턴(`rectangle`, `figureJson`, 편집 버퍼)을 반영합니다. |
+| 통계 계산 | 새로운 상태 비저장(stateless) `POST /api/zones/stats` | 단일 엔드포인트; 시뮬레이션 핸들러는 건드리지 않음; "시뮬레이션 재실행 없이 구역 편집"을 지원합니다. |
+| 탭 순서 | `Area · Generation · Edit · Zoning · Solar · View · Landmark · Export` | 자연스러운 흐름; 다른 모델 이후 탭과 동일한 `hasModel` 게이팅을 적용합니다. |
+| 레이아웃 | `.three-col` 쉘 (설정 \| 2D 편집기 \| 3D 뷰어) | `EditTab`을 반영합니다. |
 
-## 5. Data model
+## 5. 데이터 모델
 
-### 5.1 Frontend (`app/frontend/src/types/zones.ts`, new)
+### 5.1 프런트엔드 (`app/frontend/src/types/zones.ts`, 신규)
 
 ```ts
 export type ZoneShape = 'rect' | 'polygon';
 
 export interface Zone {
-  id: string;                          // uuid (client-generated)
-  name: string;                        // "Zone 1" by default; user-editable
-  color: string;                       // hex from default palette; user-editable
-  shape: ZoneShape;                    // informational
-  ring_lonlat: [number, number][];     // [[lon, lat], ...], not closed
+  id: string;                          // uuid (클라이언트 생성)
+  name: string;                        // 기본값 "Zone 1"; 사용자 편집 가능
+  color: string;                       // 기본 팔레트의 헥사 코드; 사용자 편집 가능
+  shape: ZoneShape;                    // 정보용
+  ring_lonlat: [number, number][];     // [[lon, lat], ...], 닫히지 않음
 }
 ```
 
-State lifted into `App.tsx` next to `rectangle` / `figureJson`:
+`rectangle` / `figureJson` 옆의 `App.tsx`로 상태가 끌어올려짐:
 
 ```ts
 const [zones, setZones] = useState<Zone[]>([]);
 ```
 
-Wired with an explicit effect that also fixes a pre-existing UX bug (cached
-sim figures currently survive a target-rectangle change until the next
-`/generate`):
+기존의 UX 버그(캐시된 시뮬레이션 수치가 다음 `/generate`까지 대상 직사각형 변경 시에도 유지되는 문제)를 해결하는 명시적인 효과와 연결됨:
 
 ```ts
-// Clear zones AND any cached sim figures when the target rectangle changes.
-// The old results no longer correspond to the new area.
+// 대상 직사각형이 변경될 때 구역과 캐시된 시뮬레이션 수치를 모두 지웁니다.
+// 이전 결과는 더 이상 새 영역과 일치하지 않습니다.
 useEffect(() => {
   setZones([]);
   setFigureJson('');
@@ -92,16 +78,15 @@ useEffect(() => {
 }, [rectangle]);
 ```
 
-`zones` is then passed read-only into `<ZoningTab>`, `<SolarTab>`,
-`<ViewTab>`, and `<LandmarkTab>`.
+그 후 `zones`는 `<ZoningTab>`, `<SolarTab>`, `<ViewTab>`, `<LandmarkTab>`에 읽기 전용으로 전달됩니다.
 
-### 5.2 Backend (`app/backend/models.py`)
+### 5.2 백엔드 (`app/backend/models.py`)
 
 ```python
 class ZoneSpec(BaseModel):
     id: str
     name: str
-    ring_lonlat: list[list[float]]      # [[lon, lat], ...] (>=3 pts)
+    ring_lonlat: list[list[float]]      # [[lon, lat], ...] (3개 이상의 점)
 
 class ZoneStatsRequest(BaseModel):
     zones: list[ZoneSpec]
@@ -109,7 +94,7 @@ class ZoneStatsRequest(BaseModel):
 class ZoneStat(BaseModel):
     zone_id: str
     cell_count: int
-    valid_count: int                    # cells/faces with finite values
+    valid_count: int                    # 유한한 값을 가진 셀/면의 수
     mean: float | None
     min:  float | None
     max:  float | None
@@ -118,278 +103,84 @@ class ZoneStat(BaseModel):
 class ZoneStatsResponse(BaseModel):
     target:     str                     # "ground" | "building" | "none"
     sim_type:   str | None              # "solar" | "view" | "landmark" | None
-    unit_label: str | None              # mirrors AppState.last_colorbar_title
+    unit_label: str | None              # AppState.last_colorbar_title을 반영
     stats:      list[ZoneStat]
 ```
 
-No server-side zone state; reuses existing `AppState.last_sim_*` caches.
+서버 측 구역 상태는 없으며, 기존의 `AppState.last_sim_*` 캐시를 재사용합니다.
 
-## 6. Backend endpoint
+## 6. 백엔드 엔드포인트
 
-### 6.1 Route
+### 6.1 라우트
 
 `POST /api/zones/stats` → `ZoneStatsResponse`
 
-### 6.2 Handler outline
+### 6.2 핸들러 개요
 
 ```python
 @app.post("/api/zones/stats", response_model=ZoneStatsResponse)
 def zone_stats(req: ZoneStatsRequest):
     if app_state.voxcity is None:
-        raise HTTPException(400, "No model loaded")
+        raise HTTPException(400, "모델이 로드되지 않았습니다")
     if app_state.last_sim_type is None:
-        raise HTTPException(400, "Run a simulation first")
+        raise HTTPException(400, "시뮬레이션을 먼저 실행하십시오")
     if app_state.last_sim_target == "ground":
         return _zone_stats_ground(req.zones)
     if app_state.last_sim_target == "building":
         return _zone_stats_building(req.zones)
-    raise HTTPException(400, f"Unsupported target: {app_state.last_sim_target}")
+    raise HTTPException(400, f"지원되지 않는 대상: {app_state.last_sim_target}")
 ```
 
-### 6.3 Aggregation
+### 6.3 집계
 
-**Ground** — each lon/lat ring → grid cells via a Python port of the
-frontend `polygonToCells` (in `app/frontend/src/lib/grid.ts`). Index
-`app_state.last_sim_grid[i, j]`, drop non-finite, compute `mean/min/max/std`.
+**지면(Ground)** — 각 경위도 링을 프런트엔드 `polygonToCells`(`app/frontend/src/lib/grid.ts`에 있음)의 Python 포팅 버전을 통해 그리드 셀로 변환합니다. `app_state.last_sim_grid[i, j]`를 인덱싱하고, 유한하지 않은 값을 제외한 후 `mean/min/max/std`를 계산합니다.
 
-**Building surfaces** — for each face on `app_state.last_sim_mesh` compute
-its centroid in grid-local meters, project to lon/lat, test point-in-polygon
-against each zone. Aggregate face values **area-weighted** for `mean`;
-unweighted for `min`, `max`, `std`. (Confirmed area-weighted is the desired
-behaviour; face-centroid containment is the desired inclusion rule.)
+**건물 표면(Building surfaces)** — `app_state.last_sim_mesh`의 각 면에 대해 그리드 로컬 미터 단위의 중심점을 계산하고, 경위도로 투영한 후 각 구역에 대해 점-폴리곤 포함 테스트를 수행합니다. `mean`의 경우 면적 가중(area-weighted) 방식으로 집계하고, `min`, `max`, `std`는 가중치 없이 집계합니다. (면적 가중 방식이 원하는 동작임을 확인했으며, 면 중심점 포함 여부가 원하는 포함 규칙입니다.)
 
-### 6.4 New module
+### 6.4 새 모듈
 
-`app/backend/zoning.py` housing:
+`app/backend/zoning.py`에 다음 기능을 수용합니다:
 
 - `polygon_lonlat_to_cells(ring, grid_geom) -> list[(int, int)]`
 - `grid_xy_to_lonlat(xy, grid_geom) -> ndarray`
 - `points_in_polygon(points_lonlat, ring) -> ndarray[bool]`
 - `_stats_from(zone_id, count, values, mask) -> ZoneStat`
 
-Keeps `main.py` clean.
+`main.py`를 깔끔하게 유지합니다.
 
-### 6.5 Edge cases
+### 6.5 예외 케이스
 
-| Input | Response |
+| 입력 | 응답 |
 | --- | --- |
-| Empty `zones` list | `200`, `stats: []` |
-| Zone fully outside grid | row with `cell_count: 0`, all metrics `null` |
-| Zone whose values are all NaN/inf | `valid_count: 0`, all metrics `null` |
-| No model loaded | `400 No model loaded` |
-| No sim cached | `400 Run a simulation first` |
+| 빈 `zones` 리스트 | `200`, `stats: []` |
+| 그리드 완전히 바깥에 있는 구역 | `cell_count: 0`인 행, 모든 지표 `null` |
+| 모든 값이 NaN/inf인 구역 | `valid_count: 0`, 모든 지표 `null` |
+| 모델이 로드되지 않음 | `400 모델이 로드되지 않았습니다` |
+| 시뮬레이션 캐시 없음 | `400 시뮬레이션을 먼저 실행하십시오` |
 
-## 7. Frontend — Zoning tab
+## 7. 프런트엔드 — Zoning 탭
 
-**File:** `app/frontend/src/tabs/ZoningTab.tsx` (new)
+**파일:** `app/frontend/src/tabs/ZoningTab.tsx` (신규)
 
-### 7.1 Layout (`.three-col`, mirrors `EditTab`)
+### 7.1 레이아웃 (`.three-col`, `EditTab` 반영)
 
 ```
 .three-col
-├── .panel  (left)             ← config + zone list
+├── .panel  (왼쪽)             ← 설정 + 구역 리스트
 │   ├── <h2>Zoning</h2>
-│   ├── Toolbar (mode + shape buttons)
-│   ├── Default-color palette indicator
+│   ├── 도구 모음 (모드 + 형상 버튼)
+│   ├── 기본 색상 팔레트 표시기
 │   ├── ── Zones ──
 │   │     ● Zone 1  [✎][🗑]
 │   │     ● Zone 2  [✎][🗑]
-│   │   [+ Add new zone]   [Clear all]
-│   └── (info / error banners)
+│   │   [+ 새 구역 추가]   [모두 지우기]
+│   └── (정보 / 에러 배너)
 │
-├── .map-pane  (center)        ← <PlanMapEditor>
-│   - drawColor   = active draw color (next zone's color)
+├── .map-pane  (중앙)        ← <PlanMapEditor>
+│   - drawColor   = 활성 그리기 색상 (다음 구역의 색상)
 │   - interaction = 'draw_rect_3pt' | 'draw_polygon'
-│   - pendingEdits = zones rendered as `paint_zone` overlays
+│   - pendingEdits = `paint_zone` 오버레이로 렌더링된 구역들
 │
-└── .three-pane (right)        ← <ThreeViewer>
-    - figureJson from parent
-    - + zone curtain traces (client-side)
+└── .three-pane (오른쪽)        ← <ThreeViewer>
+    - Zoning 모드에서 `figureJson`
 ```
-
-### 7.2 Toolbar
-
-- **Mode**: `[Add new zone] | [Replace selected]` (default Add).
-- **Shape**: `[Rectangle] (default) | [Polygon]`.
-- **Default palette**: 8-color cycle assigned to new zones automatically.
-- **Clear all** (with confirm).
-
-### 7.3 List interactions
-
-- `●` swatch click → small palette popover.
-- `✎` inline rename.
-- `🗑` delete with confirm.
-- Row click selects the zone (highlighted in 2D + 3D).
-
-### 7.4 3D curtain rendering ("luminescent, see-through-best-effort")
-
-For each zone:
-
-1. **Geometry**: extrude `ring_lonlat → grid xy` from `z = 0` to
-   `ceiling = max(0.1 * max_building_height_m, 3.0)`.
-2. **Surface trace**: `Mesh3d` of the curtain panel.
-   - `color = zone.color`, `opacity = 0.35` (selected: `0.5`).
-   - `flatshading: true`, `lighting: { ambient: 1, diffuse: 0, specular: 0 }`
-     (emissive look — bright regardless of normals/light).
-3. **Edge trace**: `Scatter3d` `mode: 'lines'`, ring + corner verticals.
-   - `line.width: 6` (selected: `8`), `line.color = zone.color` at full opacity.
-4. **Draw order**: append zone traces *last* in `figure.data` so Plotly's GL
-   renderer favors them over translucent voxel meshes.
-5. **Constraint**: Plotly does not expose a true `depthTest=false` mode.
-   When tall buildings stand between the camera and a zone, the lower part
-   of the curtain may be occluded. The low ceiling, saturated color, and
-   thick edge line maximize the chance of an upper-rim silhouette remaining
-   visible. A full always-on-top fix requires swapping the 3D backend
-   (out of scope).
-
-### 7.5 Curtain ceiling source
-
-`max_building_height_m` from `ModelGeoResult` if present; otherwise computed
-once on tab mount from `building_height_grid`.
-
-### 7.6 Empty / gating states
-
-- `!hasModel` → existing "Please generate a VoxCity model first" warning.
-- Model exists, no zones → editor active, list shows hint "Draw a zone on
-  the map →".
-
-## 8. Frontend — simulation tab integration
-
-Applies identically to `SolarTab`, `ViewTab`, `LandmarkTab`.
-
-### 8.1 Wiring
-
-`App.tsx` passes `zones` (read-only) into each sim tab in addition to current
-props.
-
-### 8.2 New shared pieces
-
-- `app/frontend/src/hooks/useZoneStats.ts` — debounced fetch of
-  `/api/zones/stats` keyed by `(simRunNonce, hash(zones))`.
-- `app/frontend/src/components/ZoneStatsTable.tsx` — renders the table,
-  `Export CSV` button (client-side blob download).
-- `app/frontend/src/lib/zoneTraces.ts` — pure builder used by both Zoning
-  tab and sim tabs to produce the curtain `Mesh3d` + edge `Scatter3d` traces
-  from `(zones, geo, max_h)`.
-
-### 8.3 Refresh matrix
-
-| Trigger | Refetch zone stats? |
-| --- | --- |
-| Run sim | Yes (`simRunNonce++`) |
-| Color setting rerender | No (values unchanged) |
-| User edits zones, returns to sim tab | Yes (zones hash changed) |
-| Target area changes | Both zones *and* sim cleared by existing logic |
-
-### 8.4 Stats table UI (under run controls)
-
-```
-┌── Zone statistics ─────────────── (W/m², ground) ──┐
-│ Zone        cells   mean    min    max    std       │
-│ ●  Zone 1   1,284   412.1   12.3   980.0  217.5     │
-│ ●  Zone 2     631   356.8    4.7   902.1  198.0     │
-│ ●  Zone 3     402     —       —      —      —       │
-└─────────────────────────────────────────────────────┘
-[ Export CSV ]
-```
-
-Header unit pulled from `ZoneStatsResponse.unit_label`. Rows with
-`valid_count == 0` show `—` and a muted "no data" hint.
-
-### 8.5 3D outlines on sim tabs
-
-Reuses `lib/zoneTraces.ts`. The sim tab appends zone traces to `figure.data`
-before passing the figure to `ThreeViewer`. A `[x] Show zones in 3D` checkbox
-above the table toggles their visibility (client-side, no refetch).
-
-### 8.6 Empty / disabled states
-
-- `zones.length === 0` → no extra request, no table, no checkbox; sim tab
-  identical to today.
-- Sim not yet run → table absent (matches today's "no result" state).
-- `/api/zones/stats` returns `400 Run a simulation first` → swallowed
-  silently; table only appears after a successful sim.
-
-## 9. Lifecycle / state coupling
-
-| Event | Effect on `zones` |
-| --- | --- |
-| Page load | `[]` (default) |
-| `setRectangle(...)` (Target Area tab edit) | Cleared to `[]`. Also clears all cached sim figures (`figureJson`, `editFigureJson`, `solarFigureJson`, `viewFigureJson`, `landmarkFigureJson`) via a `useEffect([rectangle])` in `App.tsx` — see §5.1. |
-| Generation completes | Untouched (zones lon/lat valid for the same area) |
-| Edit-tab commit → `onModelEdited` | Untouched (rectangle unchanged) |
-| `resetSession()` | Cleared to `[]` (page-load reset path already runs this) |
-
-## 10. Testing
-
-### 10.1 Backend (`tests/app/test_zones.py`, new)
-
-- `polygon_lonlat_to_cells`: rectangle, polygon, fully-outside, degenerate.
-- `_zone_stats_ground`: synthetic ramp grid; assert `mean/min/max/std`.
-- `_zone_stats_building`: synthetic mesh with hand-set face values + areas;
-  verify area-weighted mean.
-- `/api/zones/stats` integration: 400 (no model), 400 (no sim), 200 (empty),
-  200 (mixed valid + outside-grid zones).
-
-### 10.2 Cross-stack consistency
-
-- Snapshot a hand-computed cell set for one polygon and assert the backend
-  port of `polygonToCells` returns the same set.
-
-### 10.3 Frontend (manual smoke flow — no Vitest harness today)
-
-1. Generate model → Zoning → draw rect → confirm 2D overlay + 3D curtain.
-2. Add polygon → rename → recolor → delete one → list/2D/3D stay in sync.
-3. Run Solar (ground) → Zoning, edit a zone → back to Solar → table refreshes
-   without re-running sim.
-4. Run Solar (building) → confirm area-weighted mean on a sun-facing wall.
-5. Change target rectangle → confirm zones cleared.
-6. Export CSV round-trip.
-
-## 11. Risks & mitigations
-
-| Risk | Mitigation |
-| --- | --- |
-| Plotly cannot render through occluders | Documented; mitigated by low ceiling, saturated emissive color, last-in-data ordering, thick edge lines. |
-| Sim mesh interfaces may differ across solar/view/landmark | Implementation step 1 inspects each simulator's mesh and writes per-sim adapters in `zoning.py` that normalize to `(centroids_xy, values, areas)`. |
-| Large zones could slow `/api/zones/stats` | Vectorized numpy. Add a soft cap (e.g., 50 zones) only if profiling shows an issue. |
-| Lon/lat → cell math drift between client/server | Snapshot test asserts identical cell sets. |
-| `paint_zone` in `PlanMapEditor` was speculative | Zoning tab is the first real consumer; fix any rough edges as they surface. |
-
-## 12. Open items to confirm during implementation
-
-1. `ModelGeoResult` does **not** currently expose `max_building_height_m`
-   (verified). Implementation will compute it on Zoning-tab mount from
-   `voxcity.buildings.heights.max()` (or the equivalent already in the
-   client-side `geo` payload's `building_height_grid`).
-2. Each simulator's mesh return shape — verified to vary by sim type and
-   target. `app/backend/zoning.py` will normalize to a uniform
-   `(centroids_xy, values, areas)` tuple via per-sim adapters; first
-   implementation step is a dry-run inspection of solar/view/landmark
-   building-target mesh outputs.
-
-## 13. File touch list
-
-**New:**
-
-- `app/backend/zoning.py`
-- `app/frontend/src/tabs/ZoningTab.tsx`
-- `app/frontend/src/types/zones.ts`
-- `app/frontend/src/hooks/useZoneStats.ts`
-- `app/frontend/src/components/ZoneStatsTable.tsx`
-- `app/frontend/src/lib/zoneTraces.ts`
-- `tests/app/test_zones.py`
-
-**Modified:**
-
-- `app/backend/main.py` (add `/api/zones/stats` route)
-- `app/backend/models.py` (add `ZoneSpec`, `ZoneStatsRequest`, `ZoneStat`,
-  `ZoneStatsResponse`)
-- `app/frontend/src/App.tsx` (add `Zoning` tab + `zones` state + clear on
-  rectangle change)
-- `app/frontend/src/api.ts` (add `getZoneStats` helper)
-- `app/frontend/src/tabs/SolarTab.tsx`,
-  `app/frontend/src/tabs/ViewTab.tsx`,
-  `app/frontend/src/tabs/LandmarkTab.tsx` (consume `zones`, render table +
-  curtain outlines)
-- `app/frontend/src/index.css` (any minor styles for `ZoneStatsTable`)

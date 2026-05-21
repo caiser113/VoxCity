@@ -1,296 +1,272 @@
-# Edit Tab Guided Controls Design
+# Edit(편집) 탭 가이드 컨트롤(Guided Controls) 설계
 
-## Summary
+## 요약
 
-Simplify the Edit tab control experience without changing the basic three-panel page layout. The Edit tab will keep its current left control panel, center 2D plan editor, and right 3D result panel. The redesign changes only the UI inside those panels.
+기본적인 3분할 페이지 레이아웃을 변경하지 않고 Edit 탭의 제어 환경을 단순화합니다. Edit 탭은 현재의 왼쪽 제어 패널, 중앙 2D 평면 편집기, 오른쪽 3D 결과 패널을 그대로 유지합니다. 이번 재설계는 해당 패널 내부의 UI만을 변경합니다.
 
-The left panel becomes a target-first guided workflow: users first choose what they are editing, then choose the task for that target, then see only the relevant method and value controls. Display-only settings move out of the left panel and into a compact control in the 2D plan editor header. Pending edit actions remain pinned at the bottom of the left panel so the buffered edit workflow stays visible.
+왼쪽 패널은 **대상 우선 가이드 워크플로(target-first guided workflow)**로 변경됩니다. 사용자는 먼저 편집할 대상을 선택한 다음, 해당 대상에 대한 작업을 선택하고, 그에 관련된 방법 및 값 제어 항목만 확인하게 됩니다. 표시 전용 설정은 왼쪽 패널에서 나와 2D 평면 편집기 헤더의 컴팩트한 컨트롤로 이동합니다. 보류 중인 편집 작업은 왼쪽 패널 하단에 고정되어 버퍼링된 편집 워크플로가 계속 보이도록 유지됩니다.
 
-## Goals
+## 목표
 
-- Preserve the current three-panel Edit tab layout: left controls, center 2D plan editor, right 3D result.
-- Reduce the number of controls visible at one time in the left panel.
-- Separate Building Add, Height, and Remove workflows so they no longer appear as one long stacked form.
-- Apply the same target-first guided pattern to Building, Tree, and Land cover editing.
-- Move basemap, overlay, and visibility controls out of the main editing workflow.
-- Keep the existing buffered edit model: edits preview in 2D, can be undone or cleared, and are committed through **Update 3D model**.
-- Keep map drawing and selection behavior stable wherever possible.
+- 현재의 3분할 Edit 탭 레이아웃(왼쪽 컨트롤, 중앙 2D 편집기, 오른쪽 3D 결과)을 보존합니다.
+- 왼쪽 패널에 한 번에 표시되는 컨트롤 수를 줄입니다.
+- 건물 추가(Add), 높이(Height), 제거(Remove) 워크플로를 분리하여 더 이상 하나의 긴 폼으로 나타나지 않게 합니다.
+- 동일한 대상 우선 가이드 패턴을 건물(Building), 나무(Tree), 토지 피복(Land cover) 편집에 적용합니다.
+- 베이스맵, 오버레이, 가시성 제어 항목을 주요 편집 워크플로 밖으로 이동시킵니다.
+- 기존의 버퍼링된 편집 모델을 유지합니다. (2D에서 미리 보기, 실행 취소/지우기 가능, **Update 3D model**을 통해 커밋)
+- 가능한 한 지도의 그리기 및 선택 동작을 안정적으로 유지합니다.
 
-## Non-Goals
+## 비목표
 
-- Do not change the page-level three-panel layout or panel ordering.
-- Do not replace the Leaflet 2D plan editor or the 3D result panel.
-- Do not redesign other app tabs.
-- Do not add a new backend editing subsystem.
-- Do not make model regeneration automatic after every edit.
-- Do not add a separate pending-edit history table in this redesign.
+- 페이지 수준의 3분할 레이아웃이나 패널 순서를 변경하지 않습니다.
+- Leaflet 2D 평면 편집기나 3D 결과 패널을 교체하지 않습니다.
+- 앱의 다른 탭을 재설계하지 않습니다.
+- 새로운 백엔드 편집 하위 시스템을 추가하지 않습니다.
+- 편집할 때마다 모델 재생성을 자동화하지 않습니다.
+- 이번 재설계에서 별도의 보류 중인 편집 내역 테이블을 추가하지 않습니다.
 
-## Recommended Approach
+## 권장 접근 방식
 
-Use a target-first guided control panel inside the existing Edit tab layout.
+기존 Edit 탭 레이아웃 내에서 대상 우선 가이드 제어 패널을 사용합니다.
 
-The user first chooses the edit target:
+사용자는 먼저 편집 대상을 선택합니다:
 
-- **Building**
-- **Tree**
-- **Land cover**
+- **Building (건물)**
+- **Tree (나무)**
+- **Land cover (토지 피복)**
 
-The selected target determines the task choices:
+선택된 대상에 따라 작업 선택지가 결정됩니다:
 
 - Building: **Add**, **Height**, **Remove**
 - Tree: **Add**, **Remove**
 - Land cover: **Paint**
 
-The selected task determines the method and fields shown below it. This keeps repeated editing fast while reducing the visual load of the current left panel.
+선택된 작업에 따라 그 아래에 표시될 방법과 필드가 결정됩니다. 이는 시각적 부하를 줄이면서도 반복적인 편집 작업을 빠르게 유지할 수 있게 해줍니다.
 
-This approach is preferable to a strict wizard because spatial editing often requires switching tools quickly. It is also preferable to simple collapsible sections because it changes the mental model instead of only hiding existing complexity.
+이 방식은 공간 편집 시 도구를 빠르게 전환해야 하는 경우가 많기 때문에 엄격한 위저드(wizard) 방식보다 선호됩니다. 또한 단순히 기존의 복잡성을 숨기는 것이 아니라 멘탈 모델 자체를 변경하기 때문에 단순한 접기(collapsible) 섹션보다 효과적입니다.
 
-## Layout Boundary
+## 레이아웃 경계
 
-The current Edit tab layout is a hard constraint. The page remains a three-column workspace:
+현재의 Edit 탭 레이아웃은 강력한 제약 사항입니다. 페이지는 다음의 3열 작업 공간으로 유지됩니다:
 
-- Left panel: edit controls
-- Center panel: 2D plan editor
-- Right panel: 3D result
+- 왼쪽 패널: 편집 컨트롤
+- 중앙 패널: 2D 평면 편집기
+- 오른쪽 패널: 3D 결과
 
-Only the UI inside those panels changes. The redesign should not add a new full-width toolbar, move the 2D map, move the 3D result, or change the overall panel proportions beyond normal responsive behavior already present in the app.
+이 패널들 내부의 UI만 변경됩니다. 재설계 시 새로운 전체 너비 도구 모음을 추가하거나, 2D 지도를 이동하거나, 3D 결과를 이동하거나, 앱에 이미 존재하는 반응형 동작 범위를 벗어나 전체 패널 비율을 변경해서는 안 됩니다.
 
-## Left Control Panel Design
+## 왼쪽 제어 패널 디자인
 
-The left panel keeps the **Edit Model** heading and becomes a guided control surface with three layers.
+왼쪽 패널은 **Edit Model** 헤딩을 유지하며 세 개의 레이어로 구성된 가이드 제어 표면이 됩니다.
 
-### 1. Target
+### 1. Target (대상)
 
-A target selector lets users choose **Building**, **Tree**, or **Land cover**. The selector replaces the current mode tabs conceptually, but keeps the same target choices.
+대상 선택기를 통해 사용자가 **Building**, **Tree**, 또는 **Land cover**를 선택할 수 있게 합니다. 이 선택기는 개념적으로 현재의 모드 탭을 대체하지만 동일한 대상 선택지를 유지합니다.
 
-Switching target resets the task and method to valid defaults for that target. It also clears transient task UI such as selected building ids for height editing.
+대상을 전환하면 작업 및 방법이 해당 대상에 맞는 유효한 기본값으로 리셋됩니다. 또한 높이 편집을 위해 선택된 건물 ID와 같은 일시적인 UI 상태도 지워집니다.
 
-Default target state:
+기본 대상 상태:
+- Building: Add / Rectangle이 기본값입니다.
+- Tree: Add / Click이 기본값입니다.
+- Land cover: Paint / Click이 기본값입니다.
 
-- Building defaults to Add / Rectangle.
-- Tree defaults to Add / Click.
-- Land cover defaults to Paint / Click.
+### 2. Task (작업)
 
-### 2. Task
+작업 선택기는 선택된 대상에 해당하는 작업만 표시합니다.
 
-The task selector shows only the tasks for the selected target.
+건물(Building) 작업:
+- **Add**: 새로운 건물 풋프린트를 생성합니다.
+- **Height**: 건물을 선택하고 높이 수정을 버퍼링합니다.
+- **Remove**: 클릭이나 영역 지정을 통해 건물을 삭제합니다.
 
-Building tasks:
+나무(Tree) 작업:
+- **Add**: 클릭이나 영역 지정을 통해 나무를 추가합니다.
+- **Remove**: 클릭이나 영역 지정을 통해 수관(canopy)을 제거합니다.
 
-- **Add**: create new building footprints.
-- **Height**: select buildings and buffer height edits.
-- **Remove**: delete buildings by click or area.
+토지 피복(Land cover) 작업:
+- **Paint**: 단일 셀이나 영역을 색칠합니다.
 
-Tree tasks:
+### 3. Tool Details (도구 세부 사항)
 
-- **Add**: add trees by click or area.
-- **Remove**: remove canopy by click or area.
+도구 세부 사항 영역은 선택된 작업의 방법과 입력 필드만 표시합니다.
 
-Land cover tasks:
+건물 추가(Building Add):
+- 방법: 직사각형(Rectangle) 또는 폴리곤(Polygon).
+- 입력: 높이 및 최소/기반 높이.
 
-- **Paint**: paint one cell or an area.
+건물 높이(Building Height):
+- 방법: 클릭(Click) 또는 영역(Area).
+- 상태: 선택된 건물 수 및 필요한 경우 선택된 칩이나 요약 정보.
+- 입력: 상단 높이 및 선택적 최소/기반 높이.
+- 동작: 현재 선택 영역에 높이 수정을 버퍼링/적용합니다.
 
-### 3. Tool Details
+건물 제거(Building Remove):
+- 방법: 클릭(Click) 또는 영역(Area).
+- 활성 방법에 대한 짧은 문맥 힌트.
 
-The tool details area shows only the selected task's method and inputs.
+나무 추가(Tree Add):
+- 방법: 클릭(Click) 또는 영역(Area).
+- 입력: 상단 높이, 지하부/하단 높이, 직경, 고정 비율.
 
-Building Add:
+나무 제거(Tree Remove):
+- 방법: 클릭(Click) 또는 영역(Area).
 
-- Method: Rectangle or Polygon.
-- Inputs: height and min/base height.
+토지 피복 페인트(Land Cover Paint):
+- 방법: 클릭(Click) 또는 영역(Area).
+- 입력: 편집 가능한 토지 피복 클래스 색상표 및 선택된 클래스 이름.
 
-Building Height:
+비활성 작업에 대한 컨트롤은 보이지 않습니다. 이것이 주요 단순화 포인트입니다.
 
-- Method: Click or Area.
-- State: selected building count and selected chips or summary when useful.
-- Inputs: top height and optional min/base height.
-- Action: buffer/apply the height edit to the current selection.
+## 보류 중인 편집 푸터 (Pending Edit Footer)
 
-Building Remove:
+보류 중인 편집 컨트롤은 왼쪽 패널 하단에 고정된 상태로 유지됩니다:
 
-- Method: Click or Area.
-- Short contextual hint for the active method.
+- 보류 중인 편집 수.
+- **Undo last (마지막 취소)**.
+- **Clear edits (편집 모두 지우기)**.
+- **Update 3D model (3D 모델 업데이트)**.
 
-Tree Add:
+푸터는 도구 세부 사항 영역이 스크롤되더라도 계속 표시됩니다. 버튼 활성화 상태는 현재 동작을 따릅니다:
+- 보류 중인 편집이 없거나 커밋이 진행 중인 경우 Undo 및 Clear는 비활성화됩니다.
+- 보류 중인 편집이 없거나, 지도가 로딩 중이거나, 커밋이 진행 중인 경우 Update 3D model은 비활성화됩니다.
+- 커밋 중에는 업데이트 버튼에 기존의 스피너/로딩 상태가 표시됩니다.
 
-- Method: Click or Area.
-- Inputs: top height, trunk/bottom height, diameter, fixed proportion.
+전역 커밋 에러는 이 푸터 근처에 표시됩니다. 커밋은 전체 보류 중인 편집 버퍼에 적용되기 때문입니다.
 
-Tree Remove:
+## 2D 평면 편집기 패널 디자인
 
-- Method: Click or Area.
+중앙 패널은 **2D 평면 편집기**로 유지됩니다. Leaflet 지도, 그리기 상호작용, 오버레이 및 보류 중인 편집 미리 보기가 이 패널의 핵심으로 남습니다.
 
-Land Cover Paint:
+표시 전용 설정은 2D 평면 편집기 패널 헤더의 컴팩트한 **Display** 컨트롤로 이동합니다. 이 컨트롤은 다음을 관리합니다:
+- 베이스맵: CartoDB Positron, Google Satellite, OpenStreetMap.
+- 오버레이/배경: 건물, 수관, 토지 피복, 없음.
+- 건물 오버레이가 활성화되었을 때 건물 높이 라벨 표시와 같은 모드별 가시성 설정.
 
-- Method: Click or Area.
-- Inputs: editable land-cover class swatches and selected class name.
+헤더에는 현재 활성화된 오버레이(예: **Buildings 오버레이** 또는 **Canopy 오버레이**)를 요약 표시하여 사용자가 Display 컨트롤을 열지 않고도 지도 상태를 파악할 수 있도록 해야 합니다.
 
-Controls for inactive tasks are not visible. This is the main simplification.
+선택된 편집 대상은 대상이 변경될 때 현재 동작과 동일하게 기본 오버레이를 업데이트할 수 있습니다:
+- Building 대상은 기본적으로 Buildings 오버레이를 사용합니다.
+- Tree 대상은 기본적으로 Canopy 오버레이를 사용합니다.
+- Land cover 대상은 기본적으로 Land cover 오버레이를 사용합니다.
 
-## Pending Edit Footer
+사용자는 Display 컨트롤에서 오버레이를 수동으로 변경할 수 있습니다.
 
-The pending edit controls stay pinned at the bottom of the left panel:
+## 3D 결과 패널 디자인
 
-- Pending edit count.
-- **Undo last**.
-- **Clear edits**.
-- **Update 3D model**.
+오른쪽 패널은 **3D 결과** 패널로 유지됩니다. 용도와 위치는 변경되지 않습니다.
 
-The footer remains visible even when the tool details area scrolls. Button enablement follows the current behavior:
+비어 있는 상태(empty state)에서는 사용자가 편집을 적용하고 **Update 3D model**을 클릭해야 3D 결과가 렌더링된다는 현재의 안내를 유지할 수 있습니다. 왼쪽 푸터에 명확한 업데이트 작업이 이미 표시되어 있다면 비어 있는 상태의 텍스트를 약간 짧게 만들 수 있지만, 동작 변경은 필요하지 않습니다.
 
-- Undo and Clear are disabled when there are no pending edits or a commit is in progress.
-- Update 3D model is disabled when there are no pending edits, the map is loading, or a commit is in progress.
-- During commit, the update button shows the existing spinner/loading state.
+## 상태 모델 (State Model)
 
-Global commit errors appear near this footer because commit applies to the whole pending edit buffer.
-
-## 2D Plan Editor Panel Design
-
-The center panel remains the **2D plan editor**. The Leaflet map, drawing interactions, overlays, and pending edit previews remain the core of this panel.
-
-Display-only settings move into the 2D plan editor panel header through a compact **Display** control. This control manages:
-
-- Basemap: CartoDB Positron, Google Satellite, OpenStreetMap.
-- Overlay/backdrop: Buildings, Canopy, Land cover, None.
-- Mode-specific visibility settings, such as showing building height labels when the Buildings overlay is active.
-
-The header should also summarize the active overlay, for example **Buildings overlay** or **Canopy overlay**, so users can understand the map state without opening the Display control.
-
-The selected edit target may still update the default overlay when the target changes, matching the current behavior:
-
-- Building target defaults to Buildings overlay.
-- Tree target defaults to Canopy overlay.
-- Land cover target defaults to Land cover overlay.
-
-The user can override the overlay from the Display control.
-
-## 3D Result Panel Design
-
-The right panel remains the **3D result** panel. Its purpose and placement do not change.
-
-The empty state can keep the current guidance that users must apply an edit and click **Update 3D model** before a 3D result is rendered. If the left footer already shows a clear update action, the empty-state text can be slightly shorter, but no behavior change is required.
-
-## State Model
-
-`EditTab` remains the owner of edit policy and transient UI state. The current flat action model should be refactored conceptually into three pieces of state:
+`EditTab`은 계속해서 편집 정책과 일시적인 UI 상태를 소유합니다. 현재의 평면적인 액션 모델은 개념적으로 다음 세 가지 상태 조각으로 리팩토링되어야 합니다:
 
 ```ts
 target: 'building' | 'tree' | 'land_cover'
-task: target-specific task
-method: task-specific method
+task: 대상별 작업
+method: 작업별 방법
 ```
 
-These values resolve to the existing action and map interaction concepts before reaching `PlanMapEditor`. For example:
+이 값들은 `PlanMapEditor`에 도달하기 전에 기존의 액션 및 지도 상호작용 개념으로 해석됩니다. 예:
+- Building / Add / Rectangle은 `add_rect` 및 `draw_rect_3pt`로 해석됩니다.
+- Building / Height / Click은 `set_height_click` 및 `click_feature`로 해석됩니다.
+- Tree / Remove / Area는 나무 대상 문맥에서 `remove_area` 및 `draw_polygon`으로 해석됩니다.
+- Land cover / Paint / Click은 `paint_click` 및 `click_point`로 해석됩니다.
 
-- Building / Add / Rectangle resolves to `add_rect` and `draw_rect_3pt`.
-- Building / Height / Click resolves to `set_height_click` and `click_feature`.
-- Tree / Remove / Area resolves to `remove_area` and `draw_polygon` in the tree target context.
-- Land cover / Paint / Click resolves to `paint_click` and `click_point`.
+이를 통해 `PlanMapEditor`는 지도 렌더링 및 입력 이벤트에만 집중할 수 있습니다. 사용자의 대상/작업 워크플로에 대해 알 필요 없이 이미 전달받고 있는 해석된 상호작용 프롭(props)만 알면 됩니다.
 
-This keeps `PlanMapEditor` focused on map rendering and input events. It should not need to know about the user's target/task workflow beyond the resolved interaction props it already receives.
-
-## Component Boundaries
+## 컴포넌트 경계
 
 ### `app/frontend/src/tabs/EditTab.tsx`
 
-Owns:
+소유 항목:
+- 대상(target), 작업(task), 방법(method) 상태.
+- 각 대상에 대한 기본 작업 및 방법 선택.
+- 작업별 입력에 대한 유효성 검사.
+- 보류 중인 편집 내역 및 API DTO로의 변환.
+- 에러 및 정보 메시지.
+- 베이스맵, 오버레이, 가시성 옵션에 대한 Display 컨트롤 상태.
 
-- Target, task, and method state.
-- Default task and method selection for each target.
-- Validation for task-specific inputs.
-- Pending edits and conversion to API DTOs.
-- Error and info messages.
-- Display control state for basemap, overlay, and visibility options.
-
-The implementation may introduce small helper functions or a local configuration table to describe valid targets, tasks, methods, labels, defaults, and mappings to existing interactions.
+구현 시 유효한 대상, 작업, 방법, 라벨, 기본값 및 기존 상호작용으로의 매핑을 기술하기 위해 작은 헬퍼 함수나 로컬 설정 테이블을 도입할 수 있습니다.
 
 ### `app/frontend/src/components/PlanMapEditor.tsx`
 
-Continues to own:
+계속 소유할 항목:
+- Leaflet 지도 라이프사이클.
+- 베이스맵 렌더링.
+- 배경/오버레이 렌더링.
+- 보류 중인 편집 오버레이 렌더링.
+- 그리기 및 피처 선택 상호작용.
+- 건물 높이 라벨 및 선택된 건물 시각적 상태.
 
-- Leaflet map lifecycle.
-- Basemap rendering.
-- Backdrop/overlay rendering.
-- Pending edit overlay rendering.
-- Drawing and feature-picking interactions.
-- Building height labels and selected-building visual state.
-
-It should receive resolved props from `EditTab`, not target/task workflow objects.
+대상/작업 워크플로 객체가 아닌 `EditTab`으로부터 해석된 프롭을 전달받아야 합니다.
 
 ### CSS
 
-The existing Edit tab CSS can be extended with focused classes for:
+기존 Edit 탭 CSS를 확장하여 다음에 대한 전용 클래스를 추가할 수 있습니다:
+- 대상 선택기 (Target selector).
+- 작업 선택기 (Task selector).
+- 도구 세부 사항 영역 (Tool details area).
+- 고정된 보류 중인 편집 푸터 (Sticky pending edit footer).
+- 2D 평면 편집기 헤더의 Display 컨트롤.
 
-- Target selector.
-- Task selector.
-- Tool details area.
-- Sticky pending edit footer.
-- 2D plan editor header display control.
+디자인 시 카드가 깊게 중첩되는 구조는 피해야 합니다. 왼쪽 패널은 이미 패널이므로, 내부의 컨트롤은 카드 내부 카드 구조가 아닌 컴팩트한 그룹, 분할된 컨트롤(segmented controls), 메뉴 또는 폼 섹션이어야 합니다.
 
-The design should avoid deeply nested cards. The left panel is already a panel; controls inside it should be compact groups, segmented controls, menus, or form sections rather than card-within-card structures.
+## 에러 처리 및 피드백
 
-## Error Handling And Feedback
+작업별 유효성 검사 에러는 왼쪽 패널의 관련 컨트롤 근처에 표시됩니다. 예:
+- 잘못된 높이 또는 최소/기반 높이는 Building Height 또는 Building Add 세부 사항에 표시됩니다.
+- 폴리곤 선택 시 내부에 건물이 없는 경우 Building Height 또는 Building Remove 세부 사항에 표시됩니다.
+- 폴리곤이 어떤 셀도 덮지 않는 경우 활성화된 작업 세부 사항에 표시됩니다.
 
-Task-specific validation errors appear near the relevant controls in the left panel. Examples:
+**Update 3D model**의 전역 커밋 에러는 고정된 보류 중인 편집 푸터 근처에 표시됩니다.
 
-- Invalid height or min/base height appears in Building Height or Building Add details.
-- No buildings inside a selection polygon appears in Building Height or Building Remove details.
-- Polygon covers no cells appears in the active Add/Paint/Remove task details.
+성공 및 정보 메시지는 짧고 문맥에 맞아야 합니다. 예:
+- `나무 편집 1건이 버퍼링되었습니다.`
+- `건물 4개가 선택되었습니다.`
+- `건물 4개에 대한 높이 편집이 버퍼링되었습니다.`
+- `편집 3건이 커밋되었습니다.`
 
-Global commit errors from **Update 3D model** appear near the pinned pending edit footer.
+대상을 변경하거나 작업을 변경하면 모드/액션 변경 시 에러를 지우는 현재 의도와 일치하게 작업별 에러와 일시적인 선택 상태가 지워집니다.
 
-Success and info messages should be shorter and contextual. Examples:
+## 테스트
 
-- `Buffered 1 tree edit.`
-- `Selected 4 buildings.`
-- `Buffered height edit for 4 buildings.`
-- `Committed 3 edits.`
+자동화된 프런트엔드 테스트는 가능한 경우 순수 헬퍼와 상태 매핑에 집중해야 합니다:
+- 대상/작업/방법을 기존의 `ModeAction` 및 `MapInteraction` 값으로 매핑하는 기능.
+- 대상이 변경될 때 유효한 기본 작업 및 방법 값을 선택하는 기능.
+- 건물, 나무, 토지 피복 간 전환 시 잘못된 이전 방법이 남지 않도록 방지하는 기능.
+- 기존의 건물 높이 편집 헬퍼 테스트를 통과 상태로 유지.
+- 기존의 그리드 및 지오메트리 테스트를 통과 상태로 유지.
 
-Changing target or task clears stale task-specific errors and transient selections, matching the current intent of clearing errors when mode/action changes.
+수동 검증 항목:
+- Edit 탭이 여전히 동일한 3개 패널을 사용하는지 확인.
+- 왼쪽 패널이 선택된 대상 및 작업 컨트롤만 표시하는지 확인.
+- 건물 추가, 높이, 제거 워크플로가 분리되었는지 확인.
+- 나무 추가 및 제거 워크플로가 분리되었는지 확인.
+- 토지 피복 페인트 기능이 여전히 사용 가능하고 컴팩트한지 확인.
+- 2D 평면 편집기 헤더에서 디스플레이 설정이 사용 가능한지 확인.
+- 대상 변경 시 적절한 기본 오버레이가 설정되면서도 Display 컨트롤에서 재정의 가능한지 확인.
+- 푸터가 고정되어 계속 보이고 버튼 상태가 올바르게 업데이트되는지 확인.
+- 추가, 삭제, 높이, 나무, 토지 피복 편집이 여전히 버퍼링되고 **Update 3D model**을 통해 커밋되는지 확인.
 
-## Testing
-
-Automated frontend tests should focus on pure helpers and state mapping where practical:
-
-- Mapping target/task/method to the existing `ModeAction` and `MapInteraction` values.
-- Choosing valid default task and method values when targets change.
-- Preventing invalid stale methods when switching between Building, Tree, and Land cover.
-- Keeping existing building-height edit helper tests passing.
-- Keeping existing grid and geometry tests passing.
-
-Manual verification should cover:
-
-- The Edit tab still uses the same three panels.
-- The left panel shows only the selected target and task controls.
-- Building Add, Height, and Remove workflows are separated.
-- Tree Add and Remove workflows are separated.
-- Land cover Paint remains available and compact.
-- Display settings are available from the 2D plan editor header.
-- Target changes set sensible default overlays, while the Display control can override them.
-- Pending footer remains visible and button states update correctly.
-- Add, remove, height, tree, and land-cover edits still buffer and commit through **Update 3D model**.
-
-Build verification should run:
-
+빌드 검증은 `app/frontend`에서 다음 명령을 실행합니다:
 ```bash
 npm run build
 ```
 
-from `app/frontend`.
+## 위험 요소 및 완화 방안
 
-## Risks And Mitigations
+- **위험: 비활성화된 컨트롤을 숨기면 기능을 찾기 어려워질 수 있음.**  
+  완화: 선택된 대상에 대한 작업 라벨은 계속 표시되며, 대상 라벨은 사용 가능한 작업을 요약하여 보여줍니다.
 
-- **Risk: Hiding inactive controls makes features less discoverable.**  
-  Mitigation: task labels remain visible for the selected target, and target labels summarize available tasks.
+- **위험: 액션 상태 리팩토링 시 기존 지도 상호작용이 깨질 수 있음.**  
+  완화: 기존 `ModeAction` 및 `MapInteraction` 값으로의 매핑을 명시적으로 유지하고 테스트로 보강합니다.
 
-- **Risk: Refactoring action state could break existing map interactions.**  
-  Mitigation: keep the mapping to existing `ModeAction` and `MapInteraction` values explicit and covered by tests.
+- **위험: 디스플레이 설정을 이동하면 베이스맵/오버레이를 찾기 어려워질 수 있음.**  
+  완화: Display 컨트롤을 2D 평면 편집기 헤더의 활성 오버레이 요약 옆에 배치합니다.
 
-- **Risk: Moving display settings could make basemap/overlay harder to find.**  
-  Mitigation: place the Display control in the 2D plan editor header, next to an active overlay summary.
+- **위험: 고정된 푸터가 좁은 왼쪽 패널의 수직 공간을 줄일 수 있음.**  
+  완화: 푸터를 컴팩트하게 유지하고 도구 세부 사항 영역만 스크롤되도록 합니다.
 
-- **Risk: A pinned footer may reduce vertical space in the narrow left panel.**  
-  Mitigation: keep the footer compact and allow only the tool details area to scroll.
-
-- **Risk: Tree and Land cover may not need as much structure as Building.**  
-  Mitigation: use the same pattern but keep their task lists short; do not add artificial steps.
+- **위험: 나무와 토지 피복은 건물만큼 많은 구조가 필요하지 않을 수 있음.**  
+  완화: 동일한 패턴을 사용하되 작업 리스트를 짧게 유지하고, 불필요한 단계를 인위적으로 추가하지 않습니다.

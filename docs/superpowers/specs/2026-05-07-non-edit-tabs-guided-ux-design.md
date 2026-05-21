@@ -1,338 +1,315 @@
-# Non-Edit Tabs Guided UX Design
+# 편집 이외 탭 가이드 UX(Non-Edit Tabs Guided UX) 설계
 
-## Summary
+## 요약
 
-Redesign the non-Edit VoxCity frontend tabs around a shared guided control-panel pattern. The redesign covers Target Area, Generation, Zoning, Solar, View, Landmark, and Export. The Edit tab is not redesigned in this pass; its recently simplified target/task/method workflow is the reference for the new interaction style.
+Edit 탭 이외의 VoxCity 프런트엔드 탭들을 공유 가이드 제어 패널 패턴으로 재설계합니다. 이번 재설계 범위는 Target Area, Generation, Zoning, Solar, View, Landmark, Export 탭을 포함합니다. Edit 탭은 이번 단계에서 재설계하지 않으며, 최근에 단순화된 대상/작업/방법 워크플로가 새로운 상호작용 스타일의 참조 모델이 됩니다.
 
-The app keeps its current tab order and broad page layouts. Target Area, Generation, Solar, View, Landmark, and Export remain two-column or single-panel where they already are. Zoning remains a three-column workspace. Within those layouts, each tab should make the primary action obvious, reduce visible control clutter, clarify prerequisites, and keep advanced controls available without putting them in the main path.
+앱의 현재 탭 순서와 광범위한 페이지 레이아웃은 유지됩니다. Target Area, Generation, Solar, View, Landmark, Export는 기존과 같이 2열 또는 단일 패널 레이아웃으로 남습니다. Zoning은 3열 작업 공간으로 유지됩니다. 이러한 레이아웃 내에서 각 탭은 주요 동작을 명확하게 만들고, 가시적인 컨트롤의 혼란을 줄이며, 전제 조건을 명확히 하고, 고급 컨트롤은 주요 경로를 방해하지 않으면서도 계속 사용할 수 있도록 합니다.
 
-## Goals
+## 목표
 
-- Optimize all non-Edit tabs in one cohesive UX pass.
-- Support both first-time users and experienced VoxCity users.
-- Keep the existing tab order and broad panel structure.
-- Make the primary action clear on every tab.
-- Reduce visible controls at first glance while preserving advanced settings.
-- Improve prerequisite and empty-state guidance between tabs.
-- Reuse a small set of shared guided UI patterns instead of solving each tab separately.
-- Preserve existing API behavior, state ownership, and core map/viewer components.
+- 모든 편집 이외 탭을 하나의 응집력 있는 UX 패스로 최적화합니다.
+- 초보 사용자와 숙련된 VoxCity 사용자 모두를 지원합니다.
+- 기존의 탭 순서와 광범위한 패널 구조를 유지합니다.
+- 모든 탭에서 주요 동작을 명확하게 만듭니다.
+- 첫눈에 보이는 컨트롤을 줄이면서도 고급 설정은 보존합니다.
+- 탭 간의 전제 조건 및 비어 있는 상태(empty-state) 안내를 개선합니다.
+- 각 탭을 별도로 해결하는 대신 소수의 공유 가이드 UI 패턴을 재사용합니다.
+- 기존 API 동작, 상태 소유권, 핵심 지도/뷰어 컴포넌트를 보존합니다.
 
-## Non-Goals
+## 비목표
 
-- Do not redesign the Edit tab in this pass.
-- Do not convert the whole app into a wizard.
-- Do not change backend APIs or simulation semantics.
-- Do not remove advanced settings.
-- Do not replace Leaflet, Three.js, `SceneViewer`, `PlanMapEditor`, or existing simulation components.
-- Do not introduce broad navigation changes, new routes, or a new app-level workflow engine.
-- Do not add heavy onboarding text or in-app tutorials.
+- 이번 단계에서 Edit 탭을 재설계하지 않습니다.
+- 앱 전체를 위저드(wizard) 방식으로 전환하지 않습니다.
+- 백엔드 API나 시뮬레이션 의미론(semantics)을 변경하지 않습니다.
+- 고급 설정을 제거하지 않습니다.
+- Leaflet, Three.js, `SceneViewer`, `PlanMapEditor` 또는 기존 시뮬레이션 컴포넌트를 교체하지 않습니다.
+- 광범위한 내비게이션 변경, 새로운 라우트 또는 새로운 앱 수준의 워크플로 엔진을 도입하지 않습니다.
+- 과도한 온보딩 텍스트나 앱 내 튜토리얼을 추가하지 않습니다.
 
-## Recommended Approach
+## 권장 접근 방식
 
-Use a shared guided control-panel pattern across the non-Edit tabs.
+편집 이외의 탭들에 대해 공유 가이드 제어 패널 패턴을 사용합니다.
 
-Each control panel should follow the same broad rhythm:
+각 제어 패널은 동일한 광범위한 리듬을 따라야 합니다:
 
-1. Primary choice or mode.
-2. Essential inputs for the selected mode.
-3. Secondary, display, or advanced settings in compact sections.
-4. Primary action and feedback near the bottom of the panel.
+1. 주요 선택지 또는 모드.
+2. 선택된 모드에 대한 필수 입력 항목.
+3. 컴팩트한 섹션에 배치된 보조, 디스플레이 또는 고급 설정.
+4. 패널 하단 근처의 주요 동작 및 피드백.
 
-This approach gives the app a coherent guided feel without slowing down repeated analytical work. It is preferable to a strict step-by-step wizard because VoxCity users often need to tweak settings and rerun analyses. It is preferable to a minimal polish pass because it creates a consistent UX language across all major workflows.
+이 방식은 분석 작업을 반복적으로 수행하는 속도를 늦추지 않으면서도 앱에 일관된 가이드 느낌을 줍니다. VoxCity 사용자는 종종 설정을 미세 조정하고 분석을 재실행해야 하므로 엄격한 단계별 위저드 방식보다 선호됩니다. 또한 모든 주요 워크플로에 걸쳐 일관된 UX 언어를 생성하기 때문에 단순한 디자인 개선보다 효과적입니다.
 
-## Shared UI Patterns
+## 공유 UI 패턴
 
-The implementation should introduce shared presentational primitives where practical. These components should not own domain state or call APIs directly; tabs keep owning their state and pass props/children into the shared structure.
+구현 시 실용적인 부분에서 공유 프리젠테이션 프리미티브(presentational primitives)를 도입해야 합니다. 이러한 컴포넌트들은 도메인 상태를 소유하거나 API를 직접 호출해서는 안 됩니다. 탭이 계속해서 자신의 상태를 소유하고 공유 구조에 프롭/자식(props/children)을 전달합니다.
 
-### Guided Panel Shell
+### 가이드 패널 쉘 (Guided Panel Shell)
 
-A reusable control-panel shell with:
+다음을 포함하는 재사용 가능한 제어 패널 쉘:
+- 스크롤 가능한 본문.
+- 선택적인 고정 푸터 (pinned footer).
+- 푸터 근처의 선택적인 상태/에러 슬롯.
+- Edit 탭과 일치하는 컴팩트한 간격.
 
-- Scrollable body.
-- Optional pinned footer.
-- Optional status/error slot near the footer.
-- Compact spacing consistent with the Edit tab.
-
-Tabs that run long actions should use the footer for their primary action:
-
+긴 작업을 실행하는 탭은 푸터를 사용하여 주요 동작을 표시해야 합니다:
 - Generation: **Generate VoxCity Model**.
 - Solar/View/Landmark: **Run Simulation**.
-- Export: format-specific export action.
+- Export: 형식별 내보내기 동작.
 
-### Choice Groups
+### 선택 그룹 (Choice Groups)
 
-Use compact segmented buttons or target-style choice buttons for primary choices:
-
-- Target Area: draw vs coordinates, then drawing mode.
+주요 선택지를 위해 컴팩트한 분할 버튼(segmented buttons) 또는 대상 스타일의 선택 버튼을 사용합니다:
+- Target Area: 지도 그리기 vs 좌표 입력, 그 다음 그리기 모드.
 - Generation: Normal vs PLATEAU.
-- Zoning: 2D area vs building surfaces, then shape when relevant.
-- Solar: instantaneous vs cumulative, ground vs building.
-- View: green, sky, custom; ground vs building.
-- Landmark: ground vs building.
+- Zoning: 2D 영역 vs 건물 표면, 그 다음 관련 있는 경우 형상 선택.
+- Solar: 순간(instantaneous) vs 누적(cumulative), 지면 vs 건물.
+- View: green, sky, custom; 지면 vs 건물.
+- Landmark: 지면 vs 건물.
 - Export: CityLES vs OBJ.
 
-Choice groups should be direct controls, not nested cards.
+선택 그룹은 중첩된 카드가 아닌 직접적인 컨트롤이어야 합니다.
 
-### Guided Sections
+### 가이드 섹션 (Guided Sections)
 
-Use compact section labels and grouped controls for:
+다음에 대해 컴팩트한 섹션 라벨과 그룹화된 컨트롤을 사용합니다:
+- 필수 설정.
+- 선택적 세부 사항.
+- 고급 설정.
+- 디스플레이 설정.
+- 구역/시뮬레이션 결과 요약.
 
-- Required setup.
-- Optional details.
-- Advanced settings.
-- Display settings.
-- Zone/simulation result summaries.
+시각적 스타일은 Edit 탭의 `guided-section`, `guided-section-label` 및 분할 제어 언어를 적절한 곳에 재사용하거나 확장해야 합니다.
 
-The visual style should reuse or extend the Edit tab's `guided-section`, `guided-section-label`, and segmented control language where it fits.
+### 고급 및 디스플레이 섹션 (Advanced And Display Sections)
 
-### Advanced And Display Sections
+고급 제어 항목은 계속 사용할 수 있어야 하지만 초기 뷰를 압도해서는 안 됩니다. `ColorSettings`, `SamplingSettings`, `VoxelClassVisibility` 및 소스 선택기와 같은 기존 컴포넌트들은 접을 수 있는 컴팩트한 섹션으로 유지할 수 있습니다.
 
-Advanced controls should remain available but not dominate the initial view. Existing components such as `ColorSettings`, `SamplingSettings`, `VoxelClassVisibility`, and source selectors can remain as collapsible/compact sections.
+표시 전용 컨트롤은 가능한 경우 핵심 워크플로 컨트롤에서 분리해야 합니다. 지도 기반 탭의 경우, 베이스맵/배경 표시 컨트롤은 Edit 탭 패턴과 일치하게 지도/편집기 헤더에 위치해야 합니다.
 
-Display-only controls should move away from core workflow controls when possible. For map-based tabs, basemap/backdrop display controls should sit in the map/editor header, matching the Edit tab pattern.
+### 비어 있는 상태 및 준비 상태 (Empty And Readiness States)
 
-### Empty And Readiness States
+전제 조건 상태는 짧고 문맥에 맞으며 행동 지향적이어야 합니다:
+- Generation은 대상 영역(target area)이 필요합니다.
+- Zoning, Solar, View, Landmark, Export는 생성된 모델이 필요합니다.
+- 시뮬레이션 탭은 구역이 존재하거나 구역 통계가 관련 있는 경우에만 구역을 언급할 수 있습니다.
 
-Prerequisite states should be short, contextual, and action-oriented:
+이러한 상태는 긴 튜토리얼이 되어서는 안 됩니다. 다음에 필요한 탭/동작을 명확하게 알려주어야 합니다.
 
-- Generation needs a target area.
-- Zoning, Solar, View, Landmark, and Export need a generated model.
-- Sim tabs can mention zones only when zones exist or when zone stats are relevant.
+## 레이아웃 경계
 
-These states should not be long tutorials. They should make the next required tab/action clear.
+광범위한 앱 구조는 안정적으로 유지됩니다:
+- 현재 탭 순서 유지: Target Area, Generation, Edit, Zoning, Solar, View, Landmark, Export.
+- 현재의 상단 탭 바 유지.
+- Target Area를 컨트롤과 지도의 조합으로 유지.
+- Generation을 컨트롤과 3D 미리 보기의 조합으로 유지.
+- Zoning을 컨트롤, 2D 편집기, 3D 미리 보기의 조합으로 유지.
+- Solar/View/Landmark를 컨트롤과 3D 결과 뷰어의 조합으로 유지.
+- Export를 컴팩트한 내보내기 패널로 유지.
 
-## Layout Boundaries
+이러한 경계 내에서 개별 제어 영역은 유용한 경우 재설계될 수 있습니다. 디자인은 훑어보기(scanability), 주요 동작 배치 및 컨트롤 혼란 감소를 우선시해야 합니다.
 
-The broad app structure stays stable:
+## Target Area 탭
 
-- Keep the current tab order: Target Area, Generation, Edit, Zoning, Solar, View, Landmark, Export.
-- Keep the existing top tab bar.
-- Keep Target Area as controls plus map.
-- Keep Generation as controls plus 3D preview.
-- Keep Zoning as controls, 2D editor, and 3D preview.
-- Keep Solar/View/Landmark as controls plus 3D result viewer.
-- Keep Export as a compact export panel.
+Target Area는 가이드 영역 설정 패널이 됩니다.
 
-Within those boundaries, individual control areas can be redesigned where useful. The design should prioritize scanability, primary action placement, and reduced control clutter.
+첫 번째 선택은 영역을 정의하는 방법입니다:
+- Draw on map (지도에 그리기).
+- Enter coordinates (좌표 입력).
 
-## Target Area Tab
+지도에 그릴 때는 도시 검색과 그리기 모드를 함께 보여줍니다. 그리기 모드 옵션은 그대로 유지됩니다:
+- Free hand (자유곡선).
+- Rotated free hand (회전된 자유곡선).
+- Set dimensions (치수 설정).
 
-Target Area becomes a guided area setup panel.
+치수 입력 필드는 치수 기반 모드에서만 나타납니다. 주요 동작은 **Load Map**입니다. 지도 패널은 현재의 지도 선택기를 유지하지만 직사각형 영역이 존재할 때 컴팩트한 선택 영역 상태를 보여주어야 합니다.
 
-The first choice is how to define the area:
+좌표 입력은 계속 사용할 수 있지만, 해당 필드들은 지도 그리기와 경쟁하지 않도록 다른 입력 모드로서 시각적으로 그룹화되어야 합니다. **Set Rectangle** 동작이 좌표 모드의 주요 동작이 되어야 합니다.
 
-- Draw on map.
-- Enter coordinates.
+## Generation 탭
 
-When drawing on the map, show city search and drawing mode together. Drawing mode options remain:
+Generation은 2열 컨트롤/미리 보기 레이아웃을 유지합니다.
 
-- Free hand.
-- Rotated free hand.
-- Set dimensions.
+왼쪽 패널은 다음을 보여주어야 합니다:
+1. Generation 모드: Normal 또는 PLATEAU.
+2. 필수 생성 설정, 특히 메시 크기(mesh size).
+3. 소스 전략 (Source strategy).
+4. 고급 파라미터.
+5. 고정된 **Generate VoxCity Model** 동작.
 
-Dimension inputs appear only for the dimension-based mode. The main action is **Load Map**. The map panel keeps the current map picker but should show a compact selected-area status when a rectangle exists.
+Normal 모드는 자동 소스 선택을 권장 기본값으로 유지해야 합니다. 자동 감지된 소스 정보는 컴팩트하고 읽기 쉬워야 합니다. 수동 소스 선택은 접을 수 있는 소스 설정 섹션에서 사용할 수 있어야 합니다.
 
-Coordinate entry remains available, but its fields should be visually grouped as an alternate input mode rather than competing with map drawing. The **Set Rectangle** action should be the primary action for coordinate mode.
+CityGML 캐시 및 nDSM 수관(canopy)과 같은 PLATEAU 전용 토글은 PLATEAU 모드가 활성화되었을 때만 보이며, 필수적인 경우가 아니면 고급/설정 그룹 아래에 배치되는 것이 좋습니다.
 
-## Generation Tab
+미리 보기 패널은 3D 미리 보기로 유지됩니다. 현재 동작을 유지하고 사용 가능한 경우 생성된 결과를 보여주어야 합니다.
 
-Generation keeps the two-column control/preview layout.
+## Zoning 탭
 
-The left panel should show:
+Zoning은 다음의 3열 작업 공간을 유지합니다:
+- 왼쪽: 가이드 구역 빌더 및 구역 리스트.
+- 중앙: 2D 구역 편집기.
+- 오른쪽: 3D 미리 보기 및 건물 표면 선택.
 
-1. Generation mode: Normal or PLATEAU.
-2. Essential generation settings, especially mesh size.
-3. Source strategy.
-4. Advanced parameters.
-5. Pinned **Generate VoxCity Model** action.
+왼쪽 패널은 구역 유형으로 시작해야 합니다:
+- 2D area (2D 영역).
+- Building surfaces (건물 표면).
 
-Normal mode should keep automatic source selection as the recommended default. Auto-detected source information should be compact and readable. Manual source selection should be available in a collapsible source configuration section.
+형상 선택은 2D 영역 구역에 대해서만 나타납니다. 구역 생성 및 구역 리스트 작업은 왼쪽 패널에 유지됩니다. 구역 리스트는 반복 편집에 효율적이어야 하지만, 사용자가 활성 구역 유형, 활성 그룹 및 사용 가능한 작업을 이해할 수 있도록 컨트롤들이 그룹화되어야 합니다.
 
-PLATEAU-specific toggles such as CityGML cache and nDSM canopy stay visible only when PLATEAU mode is active, preferably under advanced/settings grouping unless they are essential to the selected mode.
+베이스맵 및 배경 컨트롤은 왼쪽 구역 빌더에서 2D 편집기 헤더의 컴팩트한 **Display** 컨트롤로 이동하여 Edit 탭의 디스플레이 메뉴 패턴과 일치시킵니다. 이는 지도 표시 상태를 구역 구축 상태와 분리합니다.
 
-The preview panel remains the 3D preview. It should keep its current behavior and show generated results when available.
+3D 패널은 미리 보기와 건물 표면 선택에 집중합니다. 건물 표면 미세 조정 컨트롤은 선택된 건물/구역 상태와 연결된 상태로 유지됩니다.
 
-## Zoning Tab
+## Solar 탭
 
-Zoning keeps its three-column workspace:
+Solar는 공유 시뮬레이션 제어 패턴을 사용합니다.
 
-- Left: guided zone builder and zone list.
-- Center: 2D zone editor.
-- Right: 3D preview and building-surface picking.
+시각적인 핵심 설정에는 다음이 포함되어야 합니다:
+- 계산 유형: 순간(instantaneous) 또는 누적(cumulative).
+- 분석 대상: 지면(ground) 또는 건물 표면(building surfaces).
+- 선택된 계산 유형에 필요한 시간/날짜 필드.
 
-The left panel should start with zone type:
+색상 설정, 복셀 가시성 및 구역 통계는 계속 사용할 수 있지만 주요 설정과 시각적으로 경쟁해서는 안 됩니다. 구역 통계는 유용한 경우(특히 실행 후 또는 구역이 존재할 때) 계속 보여주어야 하지만, 필수 시뮬레이션 입력과는 분리되어야 합니다.
 
-- 2D area.
-- Building surfaces.
+**Run Simulation** 동작은 제어 패널 푸터에 고정되어야 합니다. 로딩, 에러 및 실행 상태는 해당 동작 근처에 나타납니다.
 
-Shape selection appears only for 2D area zones. Zone creation and zone list actions remain in the left panel. The zone list should remain efficient for repeat edits, but controls should be grouped so users can understand the active zone type, active group, and available actions.
+뷰어 패널은 시뮬레이션 미리 보기로 유지되며 계속해서 `SceneViewer`를 사용합니다.
 
-Basemap and backdrop controls should move from the left zone builder into a compact **Display** control in the 2D editor header, matching the Edit tab's display menu pattern. This separates map display state from zone-building state.
+## View 탭
 
-The 3D panel stays focused on preview and building-surface selection. Building-surface refinement controls remain tied to the selected building/zone state.
+View는 공유 시뮬레이션 제어 패턴을 사용합니다.
 
-## Solar Tab
+시각적인 핵심 설정에는 다음이 포함되어야 합니다:
+- View 유형: green, sky 또는 custom.
+- 분석 대상: 지면 또는 건물 표면.
+- 조망점 높이.
 
-Solar uses the shared simulation control pattern.
+커스텀 클래스 선택은 커스텀 view 유형에서만 나타납니다. 포함/제외 모드 및 클래스 토글은 해당 커스텀 섹션 내에 그룹화되어야 합니다.
 
-The visible core setup should include:
+샘플링 설정, 색상 설정, 복셀 가시성 및 구역 통계는 보조 섹션으로 이동합니다. 기존의 `SamplingSettings`, `ColorSettings`, `VoxelClassVisibility` 컴포넌트들은 가능한 경우 그대로 유지되어야 합니다.
 
-- Calculation type: instantaneous or cumulative.
-- Analysis target: ground or building surfaces.
-- Required time/date fields for the selected calculation type.
+**Run Simulation** 동작은 고정되어야 하며 근처에 로딩 및 API 에러가 표시됩니다.
 
-Color settings, voxel visibility, and zone stats remain available but should not visually compete with the primary setup. Zone stats should stay visible when useful, especially after a run or when zones exist, but should be separated from required simulation inputs.
+## Landmark 탭
 
-The **Run Simulation** action should be pinned in the control panel footer. Loading, error, and run status appear near that action.
+Landmark는 공유 시뮬레이션 패턴을 따르지만 랜드마크 선택부터 시작합니다.
 
-The viewer panel remains the simulation preview and continues to use `SceneViewer`.
+제어 패널은 선택 상태를 하나의 일관된 섹션으로 그룹화해야 합니다:
+- 분석 대상.
+- 선택 모드가 활성화되었을 때 3D 뷰어에서 클릭하여 랜드마크 건물 선택.
+- 선택된 건물 칩/개수.
+- 수동 랜드마크 ID 입력.
+- 선택 지우기.
+- 시뮬레이션 결과를 볼 때 선택 화면으로 돌아가기.
 
-## View Tab
+시뮬레이션 설정은 선택 영역 아래에 위치합니다. 샘플링, 색상, 복셀 가시성 및 구역 통계는 보조 섹션으로 유지됩니다.
 
-View uses the shared simulation control pattern.
+**Run Simulation** 동작은 고정되어야 합니다. 에러 및 실행 상태는 그 근처에 나타납니다.
 
-The visible core setup should include:
+3D 뷰어는 현재의 선택 동작을 유지합니다: 시뮬레이션 결과 전에는 클릭으로 랜드마크 건물을 선택할 수 있고, 결과 후에는 강조 표시와 함께 시뮬레이션 결과를 보여줍니다.
 
-- View type: green, sky, or custom.
-- Analysis target: ground or building surfaces.
-- View point height.
+## Export 탭
 
-Custom class selection appears only for custom view type. Inclusion/exclusion mode and class toggles should be grouped inside that custom section.
+Export는 컴팩트한 가이드 내보내기 패널이 됩니다.
 
-Sampling settings, color settings, voxel visibility, and zone stats move into secondary sections. The current `SamplingSettings`, `ColorSettings`, and `VoxelClassVisibility` components should remain intact where possible.
-
-The **Run Simulation** action should be pinned, with loading and API errors nearby.
-
-## Landmark Tab
-
-Landmark follows the shared simulation pattern but starts with landmark selection.
-
-The control panel should group selection state into one coherent section:
-
-- Analysis target.
-- Select landmark buildings by clicking in the 3D viewer when selection mode is active.
-- Selected building chips/count.
-- Manual landmark ID entry.
-- Clear selection.
-- Back to selection when viewing a simulation result.
-
-Simulation settings follow below selection. Sampling, color, voxel visibility, and zone stats remain secondary sections.
-
-The **Run Simulation** action should be pinned. Errors and run status appear near it.
-
-The 3D viewer keeps the current selection behavior: before simulation results, clicks can select landmark buildings; after results, the viewer shows the simulation result with highlights.
-
-## Export Tab
-
-Export becomes a compact guided export panel.
-
-The first choice is export format:
-
+첫 번째 선택은 내보내기 형식입니다:
 - CityLES.
 - OBJ.
 
-Only fields relevant to the selected format are visible.
+선택된 형식과 관련된 필드만 표시됩니다.
 
-CityLES fields:
+CityLES 필드:
+- 건물 재질.
+- 나무 유형.
+- 수간 높이 비율 (Trunk height ratio).
 
-- Building material.
-- Tree type.
-- Trunk height ratio.
+OBJ 필드:
+- 출력 파일명.
+- 선택적 NetCDF 내보내기.
 
-OBJ fields:
+주요 동작은 고정되며 선택된 형식에 맞게 명명됩니다 (예: **Export CityLES** 또는 **Export OBJ**). 성공 및 에러 피드백은 동작 근처에 나타납니다.
 
-- Output filename.
-- Optional NetCDF export.
+## 상태 및 데이터 흐름
 
-The primary action is pinned and named for the selected format, for example **Export CityLES** or **Export OBJ**. Success and error feedback appear near the action.
+기존의 상태 소유권은 안정적으로 유지되어야 합니다.
 
-## State And Data Flow
+`App.tsx`는 계속해서 탭 간 공유 상태를 소유합니다:
+- 대상 직사각형 (Target rectangle).
+- 모델 준비 상태 (Model readiness).
+- 지오메트리 무효화 토큰.
+- 구역 컬렉션.
+- 시뮬레이션 실행 논스(nonces).
+- 호환성을 위해 유지되는 캐시된 피규어 JSON.
 
-Existing state ownership should remain stable.
+각 탭은 계속해서 로컬 상태를 소유합니다:
+- 폼 선택 사항.
+- 고급 설정 값.
+- 로딩 상태.
+- 에러 상태.
+- 성공/실행 상태.
+- 탭 전용 선택 상태.
 
-`App.tsx` continues to own cross-tab state:
+공유 가이드 UI 컴포넌트들은 프리젠테이션용이어야 합니다. 비활성화 상태, 라벨, 설명, 자식 요소 및 액션 핸들러를 전달받을 수 있지만, VoxCity API나 도메인 전용 상태 전환에 대해 알아서는 안 됩니다.
 
-- Target rectangle.
-- Model readiness.
-- Geometry invalidation token.
-- Zone collection.
-- Simulation run nonces.
-- Cached figure JSON where retained for compatibility.
+## 에러 처리 및 피드백
 
-Each tab continues to own local state:
+피드백은 관련 동작과 더 가까워져야 합니다.
 
-- Form choices.
-- Advanced setting values.
-- Loading state.
-- Error state.
-- Success/run state.
-- Tab-specific selection state.
+- 전제 조건 에러는 탭의 기본 UI가 나타나기 전 가이드된 비어 있는 상태로 표시됩니다.
+- 생성, 시뮬레이션 또는 내보내기 시의 API 에러는 고정된 주요 동작 근처에 표시됩니다.
+- 성공 메시지는 동일한 동작 근처에 나타나며 간결해야 합니다.
+- 로딩 상태는 주요 동작을 비활성화하고 기존의 스피너 패턴을 보여주어야 합니다.
+- 고급 설정은 접혀 있는 동안에도 값을 유지해야 합니다.
+- 기존의 시뮬레이션 및 조닝 상태는 오늘날과 같이 탭 전환 시에도 유지되어야 합니다.
 
-Shared guided UI components should be presentational. They can receive disabled states, labels, descriptions, children, and action handlers, but they should not know about VoxCity APIs or domain-specific state transitions.
+예시 메시지 스타일:
+- `대상 영역이 준비되었습니다.`
+- `모델이 생성되었습니다. 그리드: 240 x 180 x 42.`
+- `시뮬레이션이 완료되었습니다.`
+- `내보내기가 완료되었습니다.`
 
-## Error Handling And Feedback
+## 테스트
 
-Feedback should be closer to the relevant action.
+자동화된 테스트는 시각적 스냅샷보다는 동작과 헬퍼 로직에 집중해야 합니다.
 
-- Prerequisite errors appear as guided empty states before a tab's main UI.
-- API errors from generation, simulation, or export appear near the pinned primary action.
-- Success messages appear near the same action and should be concise.
-- Loading state should disable the primary action and show the existing spinner pattern.
-- Advanced settings should retain values while collapsed.
-- Existing simulation and zoning state should survive tab switches as it does today.
+권장 범위:
+- 공유 가이드 컴포넌트들이 푸터 동작, 비활성화 상태 및 상태 슬롯을 올바르게 렌더링하는지 확인.
+- 대상 영역이나 모델 상태가 누락되었을 때 전제 조건 비어 있는 상태가 나타나는지 확인.
+- 로딩 중이거나 전제 조건이 누락되었을 때 주요 동작이 비활성화되는지 확인.
+- 편집 워크플로, 구역, 지오메트리 및 API 클라이언트 동작에 대한 기존 헬퍼 테스트를 통과 상태로 유지.
+- 탭 준비 상태나 라벨에 대한 새로운 순수 헬퍼가 있는 경우 집중 테스트로 보강.
 
-Example message style:
+수동 검증 항목:
+- Target Area: 그리기 모드, 치수 모드, 좌표 모드, 지도 로드, 직사각형 상태 확인.
+- Generation: 일반 자동 소스, 수동 소스, PLATEAU 설정, 고급 설정, 모델 생성 확인.
+- Zoning: 2D 구역, 건물 표면 구역, 디스플레이 메뉴, 구역 리스트 작업, 2D/3D 미리 보기 확인.
+- Solar: 순간 및 누적 실행, 지면/건물 대상, 구역, 색상/가시성 설정 확인.
+- View: green, sky, custom 클래스, 샘플링 설정, 색상/가시성 설정 확인.
+- Landmark: 클릭 선택, 수동 ID, 선택 지우기, 실행, 선택으로 돌아가기 확인.
+- Export: CityLES 및 OBJ 경로, 성공/에러 피드백 확인.
+- 2열 및 3열 레이아웃에 대한 반응형 동작 확인.
 
-- `Target area is ready.`
-- `Model generated. Grid: 240 x 180 x 42.`
-- `Simulation complete.`
-- `Export complete.`
-
-## Testing
-
-Automated tests should focus on behavior and helper logic rather than visual snapshots.
-
-Recommended coverage:
-
-- Shared guided components render footer actions, disabled states, and status slots correctly.
-- Prerequisite empty states appear when target area or model state is missing.
-- Primary actions are disabled while loading or when prerequisites are missing.
-- Existing helper tests continue to pass for edit workflow, zones, geometry, and API client behavior.
-- Any new pure helper for tab readiness or labels is covered by focused tests.
-
-Manual verification should cover:
-
-- Target Area: draw mode, dimension mode, coordinate mode, map load, rectangle status.
-- Generation: normal auto sources, manual sources, PLATEAU settings, advanced settings, model generation.
-- Zoning: 2D zones, building-surface zones, display menu, zone list actions, 2D/3D preview.
-- Solar: instantaneous and cumulative runs, ground/building targets, zones, color/visibility settings.
-- View: green, sky, and custom classes, sampling settings, color/visibility settings.
-- Landmark: click selection, manual IDs, clear selection, run, back to selection.
-- Export: CityLES and OBJ paths, success/error feedback.
-- Responsive behavior for two-column and three-column layouts.
-
-Build verification should run from `app/frontend`:
-
+빌드 검증은 `app/frontend`에서 실행합니다:
 ```bash
 npm run build
 ```
 
-## Risks And Mitigations
+## 위험 요소 및 완화 방안
 
-- **Risk: Shared components become too generic or too domain-aware.**
-  Mitigation: keep them presentational and let each tab own domain state.
+- **위험: 공유 컴포넌트가 너무 일반적이거나 너무 도메인 지식에 의존하게 됨.**
+  완화: 프리젠테이션용으로 유지하고 각 탭이 도메인 상태를 소유하게 합니다.
 
-- **Risk: Pinned footers reduce vertical space.**
-  Mitigation: use a scrollable panel body and compact footer actions, as in the Edit tab.
+- **위험: 고정된 푸터가 수직 공간을 줄임.**
+  완화: Edit 탭과 마찬가지로 스크롤 가능한 패널 본문과 컴팩트한 푸터 동작을 사용합니다.
 
-- **Risk: Advanced settings become harder to discover.**
-  Mitigation: use clear section labels and keep common advanced sections in consistent positions.
+- **위험: 고급 설정을 찾기 어려워짐.**
+  완화: 명확한 섹션 라벨을 사용하고 공통 고급 섹션을 일관된 위치에 배치합니다.
 
-- **Risk: Simulation tabs feel too similar despite different tasks.**
-  Mitigation: share structure, but keep each tab's first section specific to its domain.
+- **위험: 시뮬레이션 탭들이 서로 다른 작업임에도 너무 비슷하게 느껴짐.**
+  완화: 구조는 공유하되 각 탭의 첫 번째 섹션은 해당 도메인에 특화된 상태로 유지합니다.
 
-- **Risk: Moving display controls in Zoning may surprise users.**
-  Mitigation: mirror the Edit tab's 2D editor header display menu so the pattern is consistent.
+- **위험: Zoning에서 디스플레이 컨트롤을 이동하는 것이 사용자를 놀라게 할 수 있음.**
+  완화: Edit 탭의 2D 편집기 헤더 디스플레이 메뉴 패턴을 미러링하여 일관성을 유지합니다.
 
-- **Risk: UX-only changes accidentally alter API behavior.**
-  Mitigation: preserve existing API calls and state ownership, and verify primary workflows manually.
+- **위험: UX만 변경하려다 실수로 API 동작을 변경함.**
+  완화: 기존 API 호출 및 상태 소유권을 보존하고 주요 워크플로를 수동으로 검증합니다.

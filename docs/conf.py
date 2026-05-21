@@ -1,20 +1,18 @@
-# Configuration file for the Sphinx documentation builder.
+# Sphinx 문서 빌더를 위한 설정 파일입니다.
 #
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
+# 이 파일은 가장 일반적인 옵션들만 포함하고 있습니다. 전체 목록은 다음 문서를 참조하세요:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Project information -----------------------------------------------------
+# -- 프로젝트 정보 -----------------------------------------------------
 
 project = "VoxCity"
 copyright = "2024, Kunihiko Fujiwara"
 author = "Kunihiko Fujiwara"
 
-# -- General configuration ---------------------------------------------------
+# -- 일반 설정 ---------------------------------------------------
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+# 여기에 Sphinx 확장 모듈 이름을 문자열로 추가합니다. 
+# Sphinx에서 제공하는 기본 확장('sphinx.ext.*')이나 사용자 정의 확장을 사용할 수 있습니다.
 
 extensions = [
     "myst_nb",
@@ -24,10 +22,10 @@ extensions = [
     "sphinxcontrib.bibtex",
 ]
 
-# Add these lines to configure myst-nb
+# myst-nb 설정을 위한 라인 추가
 nb_execution_mode = "off"
 
-# Bibtex settings
+# Bibtex 설정
 bibtex_bibfiles = ["references.bib"]
 bibtex_default_style = "plain"
 autoapi_dirs = ["../src"]
@@ -44,37 +42,36 @@ autoapi_options = [
 ]
 
 autoapi_own_page_level = "class"
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
+
+# 소스 파일을 찾을 때 무시할 디렉토리와 파일 패턴 목록입니다.
+# 이 패턴은 html_static_path와 html_extra_path에도 영향을 줍니다.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-# -- Options for HTML output -------------------------------------------------
+# -- HTML 출력 옵션 -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
+# HTML 및 HTML 도움말 페이지에 사용할 테마입니다. 
+# 내장 테마 목록은 문서를 참조하세요.
 html_theme = "furo"
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
+# 테마 옵션은 테마별로 다르며 테마의 모양과 느낌을 사용자 정의합니다.
+# 각 테마에서 사용 가능한 옵션 목록은 문서를 참조하세요.
 html_theme_options = {
     "sidebar_hide_name": False,
     "navigation_with_keys": True,
-    # "announcement": "This is a beta version of the documentation.",
+    # "announcement": "이것은 문서의 베타 버전입니다.",
     "light_logo": "logo.png",
     "dark_logo": "logo.png",
 }
 
-html_title = "VoxCity Documentation"
-# Remove or comment out the following line:
+html_title = "VoxCity 문서"
+# 다음 라인은 제거하거나 주석 처리하세요:
 # html_logo = "logo.png"
-html_favicon = "_static/favicon.ico"  # Make sure you have a favicon file
+html_favicon = "_static/favicon.ico"  # 파비콘 파일이 있는지 확인하세요.
 
-# Add these lines near the other html_* configurations
+# 다른 html_* 설정 근처에 다음 라인들을 추가하세요.
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 
 def skip_util_classes(app, what, name, obj, skip, options):
-    # This project does not require custom skip logic for AutoAPI.
+    # 이 프로젝트는 AutoAPI를 위한 특별한 건너뛰기 로직이 필요하지 않습니다.
     return skip
