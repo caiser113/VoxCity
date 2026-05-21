@@ -6,89 +6,80 @@
 [![Documentation Status](https://readthedocs.org/projects/voxcity/badge/?version=latest)](https://voxcity.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/kunifujiwara/VoxCity/graph/badge.svg)](https://codecov.io/gh/kunifujiwara/VoxCity)
 [![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.compenvurbsys.2025.102366-blue)](https://doi.org/10.1016/j.compenvurbsys.2025.102366)
-<!-- [![License: CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-sa/4.0/) -->
 
 <p align="center">
-  Tutorial preview: <a href="https://colab.research.google.com/drive/1Lofd3RawKMr6QuUsamGaF48u2MN0hfrP?usp=sharing">[Google Colab]</a> | Documentation: <a href="https://voxcity.readthedocs.io/en/latest">[Read the Docs]</a> | Video tutorial: <a href="https://youtu.be/qHusvKB07qk">[Watch on YouTube]</a>
+  튜토리얼 미리보기: <a href="https://colab.research.google.com/drive/1Lofd3RawKMr6QuUsamGaF48u2MN0hfrP?usp=sharing">[Google Colab]</a> | 문서: <a href="https://voxcity.readthedocs.io/en/latest">[Read the Docs]</a> | 비디오 튜토리얼: <a href="https://youtu.be/qHusvKB07qk">[YouTube 시청]</a>
 </p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/logo.png" alt="Voxcity logo" width="550">
 </p>
 
- 
-
 # VoxCity
 
-**voxcity** is a Python package that provides a seamless solution for grid-based 3D city model generation and urban simulation for cities worldwide. VoxCity's generator module automatically downloads building heights, tree canopy heights, land cover, and terrain elevation within a specified target area, and voxelizes buildings, trees, land cover, and terrain to generate an integrated voxel city model. The simulator module enables users to conduct environmental simulations, including solar radiation and view index analyses. Users can export the generated models using several file formats compatible with external software, such as ENVI-met (INX), Blender, and Rhino (OBJ). Try it out using the [Google Colab Demo](https://colab.research.google.com/drive/1Lofd3RawKMr6QuUsamGaF48u2MN0hfrP?usp=sharing) or your local environment. For detailed documentation, API reference, and tutorials, visit our [Read the Docs](https://voxcity.readthedocs.io/en/latest) page.
+**voxcity**는 전 세계 도시를 대상으로 그리드 기반의 3D 도시 모델 생성 및 도시 시뮬레이션을 위한 원스톱 솔루션을 제공하는 Python 패키지입니다. VoxCity의 생성기(generator) 모듈은 지정된 대상 영역 내의 건물 높이, 수관(canopy) 높이, 토지 피복(land cover) 및 지형 고도 데이터를 자동으로 다운로드하고, 이를 복셀화하여 건물, 나무, 토지 피복 및 지형이 통합된 복셀 도시 모델을 생성합니다. 시뮬레이터(simulator) 모듈을 사용하면 태양 복사(solar radiation) 및 가시 지수(view index) 분석과 같은 환경 시뮬레이션을 수행할 수 있습니다. 생성된 모델은 ENVI-met (INX), Blender, Rhino (OBJ) 등 외부 소프트웨어와 호환되는 여러 파일 형식으로 내보낼 수 있습니다. [Google Colab 데모](https://colab.research.google.com/drive/1Lofd3RawKMr6QuUsamGaF48u2MN0hfrP?usp=sharing) 또는 로컬 환경에서 직접 사용해 보세요. 자세한 문서, API 레퍼런스 및 튜토리얼은 [Read the Docs](https://voxcity.readthedocs.io/en/latest) 페이지를 방문해 확인하실 수 있습니다.
 
-<!-- <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/kunifujiwara/VoxCity/blob/main/images/concept.png">
-    <img src="https://github.com/kunifujiwara/VoxCity/blob/main/images/concept.png" alt="Conceptual Diagram of voxcity" width="800">
-  </picture>
-</p> -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/concept.png" alt="Conceptual Diagram of voxcity" width="800">
 </p>
 
-## Tutorial
+## 튜토리얼 (Tutorial)
 
-### Google Colab Demos
+### Google Colab 데모
 
-| Demo | Description | Link |
+| 데모 | 설명 | 링크 |
 |------|-------------|------|
-| **Basic** | Generate a voxel city model, visualize, and export | <a href="https://colab.research.google.com/drive/1Lofd3RawKMr6QuUsamGaF48u2MN0hfrP?usp=sharing">Open in Colab</a> |
-| **ENVI-met Export** | Export a VoxCity model to ENVI-met INX format | <a href="https://colab.research.google.com/drive/1Yv7hMmfEiygCbuz5gPfGmCZyVQnr-8Qn">Open in Colab</a> |
+| **기본 가이드** | 복셀 도시 모델 생성, 시각화 및 내보내기 | <a href="https://colab.research.google.com/drive/1Lofd3RawKMr6QuUsamGaF48u2MN0hfrP?usp=sharing">Colab에서 열기</a> |
+| **ENVI-met 내보내기** | VoxCity 모델을 ENVI-met INX 형식으로 내보내기 | <a href="https://colab.research.google.com/drive/1Yv7hMmfEiygCbuz5gPfGmCZyVQnr-8Qn">Colab에서 열기</a> |
 
-### YouTube Video
+### YouTube 비디오
 
-- **Walkthrough**: <a href="https://youtu.be/qHusvKB07qk">Watch on YouTube</a>
+- **둘러보기(Walkthrough)**: <a href="https://youtu.be/qHusvKB07qk">YouTube에서 시청하기</a>
 
 <p align="center">
-  <a href="https://youtu.be/qHusvKB07qk" title="Click to watch the VoxCity tutorial on YouTube">
-    <img src="images/youtube_thumbnail_play.png" alt="VoxCity Tutorial — Click to watch on YouTube" width="480">
+  <a href="https://youtu.be/qHusvKB07qk" title="YouTube에서 VoxCity 튜토리얼 시청하기">
+    <img src="images/youtube_thumbnail_play.png" alt="VoxCity 튜토리얼 — YouTube 시청을 위해 클릭하세요" width="480">
   </a>
 </p>
 
 <p align="center">
-  <em>Tutorial video by <a href="https://ual.sg/author/xiucheng-liang/">Xiucheng Liang</a></em>
+  <em>튜토리얼 비디오 제작: <a href="https://ual.sg/author/xiucheng-liang/">Xiucheng Liang</a></em>
 </p>
 
+## 주요 기능 (Key Features)
 
-## Key Features
-
-- **Integration of Multiple Data Sources:**  
-  Combines building footprints, land cover data, canopy height maps, and DEMs to generate a consistent 3D voxel representation of an urban scene.
+- **다양한 데이터 소스 통합:**  
+  건물 풋프린트, 토지 피복 데이터, 수관 높이 맵, DEM을 결합하여 도시 경관의 일관된 3D 복셀 표현을 생성합니다.
   
-- **Flexible Input Sources:**  
-  Supports various building and terrain data sources including:
-  - Building Footprints: OpenStreetMap, Overture, EUBUCCO, Microsoft Building Footprints, Open Building 2.5D
-  - Land Cover: UrbanWatch, OpenEarthMap Japan, ESA WorldCover, ESRI Land Cover, Dynamic World, OpenStreetMap
-  - Canopy Height: High Resolution 1m Global Canopy Height Maps, ETH Global Sentinel-2 10m
-  - DEM: DeltaDTM, FABDEM, NASA, COPERNICUS, and more
+- **유연한 입력 소스:**  
+  다음을 포함한 다양한 건물 및 지형 데이터 소스를 지원합니다:
+  - 건물 풋프린트: OpenStreetMap, Overture, EUBUCCO, Microsoft Building Footprints, Open Building 2.5D
+  - 토지 피복: UrbanWatch, OpenEarthMap Japan, ESA WorldCover, ESRI Land Cover, Dynamic World, OpenStreetMap
+  - 수관 높이: 고해상도 1m 글로벌 수관 높이 맵, ETH Global Sentinel-2 10m
+  - DEM: DeltaDTM, FABDEM, NASA, COPERNICUS 등
 
-  *Detailed information about each data source can be found in the [References of Data Sources](#references-of-data-sources) section.*
+  *각 데이터 소스에 대한 자세한 정보는 [데이터 소스 참고 문헌](#references-of-data-sources) 섹션에서 확인할 수 있습니다.*
   
-- **Customizable Domain and Resolution:**  
-  Easily define a target area by drawing a rectangle on a map or specifying center coordinates and dimensions. Adjust the mesh size to meet resolution needs.
+- **사용자 정의 가능한 도메인 및 해상도:**  
+  지도에 사각형을 그리거나 중심 좌표와 크기를 지정하여 대상 영역을 쉽게 정의할 수 있습니다. 필요에 따라 메쉬 크기(해상도)를 조정하세요.
   
-- **Integration with Earth Engine:**  
-  Leverages Google Earth Engine for large-scale geospatial data processing (authentication and project setup required).
+- **Earth Engine 통합:**  
+  대규모 지형 공간 데이터 처리를 위해 Google Earth Engine을 활용합니다 (인증 및 프로젝트 설정 필요).
   
-- **Output Formats:**
-  - **ENVI-MET**: Export INX and EDB files suitable for ENVI-MET microclimate simulations.
-  - **MagicaVoxel**: Export vox files for 3D editing and visualization in MagicaVoxel.
-  - **OBJ**: Export wavefront OBJ for rendering and integration into other workflows.
+- **출력 형식:**
+  - **ENVI-MET**: 미세 기후 시뮬레이션에 적합한 INX 및 EDB 파일 내보내기.
+  - **MagicaVoxel**: MagicaVoxel에서 3D 편집 및 시각화를 위한 vox 파일 내보내기.
+  - **OBJ**: 렌더링 및 다른 워크플로우 통합을 위한 Wavefront OBJ 내보내기.
 
-- **Analytical Tools:**
-  - **View Index Simulations**: Compute sky view index (SVI) and green view index (GVI) from a specified viewpoint.
-  - **Landmark Visibility Maps**: Assess the visibility of selected landmarks within the voxelized environment.
-## Installation
+- **분석 도구:**
+  - **가시 지수 시뮬레이션**: 지정된 시점에서의 천공율(SVI) 및 녹시율(GVI) 계산.
+  - **랜드마크 가시성 맵**: 복셀화된 환경 내에서 선택된 랜드마크의 가시성 평가.
 
-Make sure you have Python 3.12 installed. Install voxcity with:
+## 설치 방법 (Installation)
 
-### For Local Environment
+Python 3.12가 설치되어 있어야 합니다. 다음 명령어로 voxcity를 설치할 수 있습니다:
+
+### 로컬 환경의 경우
 
 ```bash
 conda create --name voxcity python=3.12
@@ -97,35 +88,35 @@ conda install -c conda-forge gdal timezonefinder
 pip install voxcity
 ```
 
-### For Google Colab
+### Google Colab의 경우
 
 ```python
 !pip install voxcity
 ```
 
-## Setup for Earth Engine
+## Earth Engine 설정
 
-To use Earth Engine data, set up your Earth Engine enabled Cloud Project by following the instructions here:
+Earth Engine 데이터를 사용하려면 다음 지침에 따라 Earth Engine이 활성화된 Cloud 프로젝트를 설정하세요:
 https://developers.google.com/earth-engine/cloud/earthengine_cloud_project_setup
 
-After setting up, authenticate and initialize Earth Engine:
+설정 후, Earth Engine을 인증하고 초기화합니다:
 
-### For Local Environment
+### 로컬 환경의 경우
 
 ```bash
 earthengine authenticate
 ```
 
-### For Google Colab
+### Google Colab의 경우
 
 ```python
-# Click displayed link, generate token, copy and paste the token
+# 표시된 링크를 클릭하고 토큰을 생성한 뒤, 토큰을 복사하여 붙여넣으세요.
 !earthengine authenticate --auth_mode=notebook
 ```
 
-## Usage Overview
+## 사용법 개요 (Usage Overview)
 
-### 1. Authenticate Earth Engine
+### 1. Earth Engine 인증
 
 ```python
 import ee
@@ -133,24 +124,24 @@ ee.Authenticate()
 ee.Initialize(project='your-project-id')
 ```
 
-### 2. Define Target Area
+### 2. 대상 구역 정의
 
-You can define your target area in three ways:
+세 가지 방법으로 대상 구역을 정의할 수 있습니다:
 
-#### Option 1: Direct Coordinate Input
-Define the target area by directly specifying the coordinates of the rectangle vertices.
+#### 옵션 1: 직접 좌표 입력
+사각형 꼭짓점의 좌표를 직접 지정하여 대상 구역을 정의합니다.
 
 ```python
 rectangle_vertices = [
-    (-122.33587348582083, 47.59830044521263),  # Southwest corner (longitude, latitude)
-    (-122.33587348582083, 47.60279755390168),  # Northwest corner (longitude, latitude) 
-    (-122.32922451417917, 47.60279755390168),  # Northeast corner (longitude, latitude)
-    (-122.32922451417917, 47.59830044521263)   # Southeast corner (longitude, latitude)
+    (-122.33587348582083, 47.59830044521263),  # 남서쪽 모서리 (경도, 위도)
+    (-122.33587348582083, 47.60279755390168),  # 북서쪽 모서리 (경도, 위도) 
+    (-122.32922451417917, 47.60279755390168),  # 북동쪽 모서리 (경도, 위도)
+    (-122.32922451417917, 47.59830044521263)   # 남동쪽 모서리 (경도, 위도)
 ]
 ```
 
-#### Option 2: Draw a Rectangle (for Jupyter Notebook)
-Use the GUI map interface to draw a rectangular domain of interest.
+#### 옵션 2: 사각형 그리기 (Jupyter Notebook용)
+GUI 지도 인터페이스를 사용하여 관심 있는 사각형 영역을 그립니다.
 
 ```python
 from voxcity.geoprocessor.draw import draw_rectangle_map_cityname
@@ -160,8 +151,8 @@ m, rectangle_vertices = draw_rectangle_map_cityname(cityname, zoom=15)
 m
 ```
 
-#### Option 3: Specify Center and Dimensions (for Jupyter Notebook)
-Choose the width and height in meters and select the center point on the map.
+#### 옵션 3: 중심 및 크기 지정 (Jupyter Notebook용)
+미터 단위의 너비와 높이를 선택하고 지도에서 중심점을 선택합니다.
 
 ```python
 from voxcity.geoprocessor.draw import center_location_map_cityname
@@ -175,31 +166,31 @@ m
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/draw_rect.png" alt="Draw Rectangle on Map GUI" width="400">
 </p>
 
-### 3. Set Parameters
+### 3. 매개변수 설정
 
-Define mesh size (required) and optional data sources:
+메쉬 크기(필수)와 선택적 데이터 소스를 정의합니다:
 
 ```python
-meshsize = 5  # Grid cell size in meters (required)
+meshsize = 5  # 미터 단위의 그리드 셀 크기 (필수)
 
-# Optional: Specify output directory and other settings
+# 선택 사항: 출력 디렉토리 및 기타 설정 지정
 kwargs = {
-    "output_dir": "output",   # Directory to save output files
-    "dem_interpolation": True # Enable DEM interpolation
+    "output_dir": "output",   # 출력 파일 저장 디렉토리
+    "dem_interpolation": True # DEM 보간 활성화
 }
 ```
 
-### 4. Get voxcity Output
+### 4. voxcity 출력 획득
 
-Generate voxel data grids and a corresponding building GeoDataFrame.
+복셀 데이터 그리드와 해당 건물의 GeoDataFrame을 생성합니다.
 
-#### Option 1: Automatic Mode (Recommended)
-Data sources are automatically selected based on location:
+#### 옵션 1: 자동 모드 (권장)
+위치에 따라 데이터 소스가 자동으로 선택됩니다:
 
 ```python
 from voxcity.generator import get_voxcity
 
-# Auto mode: all data sources selected automatically based on location
+# 자동 모드: 위치를 기반으로 모든 데이터 소스가 자동으로 선택됨
 voxcity = get_voxcity(
     rectangle_vertices,
     meshsize,
@@ -207,11 +198,11 @@ voxcity = get_voxcity(
 )
 ```
 
-#### Option 2: Custom Mode
-Specify data sources explicitly:
+#### 옵션 2: 사용자 정의 모드
+데이터 소스를 명시적으로 지정합니다:
 
 ```python
-# Custom mode: specify all data sources
+# 사용자 정의 모드: 모든 데이터 소스를 명시적으로 지정
 voxcity = get_voxcity(
     rectangle_vertices,
     meshsize,
@@ -223,48 +214,48 @@ voxcity = get_voxcity(
 )
 ```
 
-#### Option 3: Hybrid Mode
-Specify some sources, auto-select others:
+#### 옵션 3: 하이브리드 모드
+일부 소스는 지정하고 나머지는 자동 선택합니다:
 
 ```python
-# Hybrid mode: specify building source, auto-select others
+# 하이브리드 모드: 건물 소스는 지정하고 나머지는 자동 선택
 voxcity = get_voxcity(
     rectangle_vertices,
     meshsize,
-    building_source='Overture',  # Custom
-    # land_cover_source, canopy_height_source, dem_source auto-selected
+    building_source='Overture',  # 사용자 지정
+    # land_cover_source, canopy_height_source, dem_source는 자동 선택됨
     **kwargs
 )
 ```
 
-### Interactive 3D Demo (Plotly)
+### 대화형 3D 데모 (Plotly)
 
-- **Open interactive demo**: <a href="https://voxcity.readthedocs.io/en/latest/_static/plotly/voxcity_demo.html">Launch the Plotly 3D viewer</a>
+- **대화형 데모 열기**: <a href="https://voxcity.readthedocs.io/en/latest/_static/plotly/voxcity_demo.html">Plotly 3D 뷰어 실행</a>
 
-### 5. Exporting Files
+### 5. 파일 내보내기 (Exporting Files)
 
-#### ENVI-MET INX/EDB Files:
-[ENVI-MET](https://www.envi-met.com/) is an advanced microclimate simulation software specialized in modeling urban environments. It simulates the interactions between buildings, vegetation, and various climate parameters like temperature, wind flow, humidity, and radiation. The software is used widely in urban planning, architecture, and environmental studies (Commercial, offers educational licenses).
+#### ENVI-MET INX/EDB 파일:
+[ENVI-MET](https://www.envi-met.com/)은 도시 환경 모델링에 특화된 고급 미세 기후 시뮬레이션 소프트웨어입니다. 건물, 식생, 그리고 온도, 풍향, 습도, 복사와 같은 다양한 기후 매개변수 간의 상호작용을 시뮬레이션합니다. 이 소프트웨어는 도시 계획, 건축 및 환경 연구에서 널리 사용됩니다 (상업용, 교육용 라이선스 제공).
 
 ```python
 from voxcity.exporter.envimet import export_inx, generate_edb_file
 
 envimet_kwargs = {
-    "output_directory": "output",            # Directory where output files will be saved
-    "file_basename": "voxcity",              # Base name (without extension) for INX
-    "author_name": "your name",              # Name of the model author
-    "model_description": "generated with voxcity",  # Description for the model
-    "domain_building_max_height_ratio": 2,   # Max ratio between domain height and tallest building
-    "useTelescoping_grid": True,             # Enable telescoping grid
-    "verticalStretch": 20,                   # Vertical grid stretching factor (%)
-    "min_grids_Z": 20,                       # Minimum number of vertical grid cells
-    "lad": 1.0                               # Leaf Area Density (m2/m3) for EDB generation
+    "output_directory": "output",            # 출력 파일 저장 디렉토리
+    "file_basename": "voxcity",              # INX용 기본 이름 (확장자 제외)
+    "author_name": "your name",              # 모델 제작자 이름
+    "model_description": "generated with voxcity",  # 모델 설명
+    "domain_building_max_height_ratio": 2,   # 도메인 높이와 가장 높은 건물 간의 최대 비율
+    "useTelescoping_grid": True,             # 텔레스코핑 그리드 활성화
+    "verticalStretch": 20,                   # 수직 그리드 신축 계수 (%)
+    "min_grids_Z": 20,                       # 최소 수직 그리드 셀 수
+    "lad": 1.0                               # EDB 생성을 위한 엽면적 밀도 (LAD, m2/m3)
 }
 
-# Optional: specify land cover source used for export (otherwise taken from voxcity.extras when available)
+# 선택 사항: 내보내기에 사용할 토지 피복 소스 지정 (지정하지 않으면 가능한 경우 voxcity.extras에서 가져옴)
 land_cover_source = 'OpenStreetMap'
 
-# Export INX by passing the VoxCity object directly
+# VoxCity 객체를 직접 전달하여 INX 내보내기
 export_inx(
     voxcity,
     output_directory=envimet_kwargs["output_directory"],
@@ -278,102 +269,102 @@ export_inx(
     min_grids_Z=envimet_kwargs["min_grids_Z"],
 )
 
-# Generate plant database (EDB) for vegetation
+# 식생을 위한 식물 데이터베이스(EDB) 생성
 generate_edb_file(lad=envimet_kwargs["lad"])
 ```
 <p align="center">
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/envimet.png" alt="Generated 3D City Model on Envi-MET GUI" width="600">
 </p>
 <p align="center">
-  <em>Example Output Exported in INX and Inported in ENVI-met</em>
+  <em>INX로 내보낸 후 ENVI-met에서 불러온 출력 예시</em>
 </p>
 
-#### OBJ Files:
+#### OBJ 파일:
 
 ```python
 from voxcity.exporter.obj import export_obj
 
-output_directory = "output"  # Directory where output files will be saved
-output_file_name = "voxcity" # Base name for the output OBJ file
-# Pass the VoxCity object directly (voxel size inferred)
+output_directory = "output"  # 출력 파일 저장 디렉토리
+output_file_name = "voxcity" # 출력 OBJ 파일의 기본 이름
+# VoxCity 객체를 직접 전달 (복셀 크기 유추됨)
 export_obj(voxcity, output_directory, output_file_name)
 ```
-The generated OBJ files can be opened and rendered in the following 3D visualization software:
+생성된 OBJ 파일은 다음 3D 시각화 소프트웨어에서 열고 렌더링할 수 있습니다:
 
-- [Twinmotion](https://www.twinmotion.com/): Real-time visualization tool (Free for personal use)
-- [Blender](https://www.blender.org/): Professional-grade 3D creation suite (Free)
-- [Rhino](https://www.rhino3d.com/): Professional 3D modeling software (Commercial, offers educational licenses)
+- [Twinmotion](https://www.twinmotion.com/): 실시간 시각화 도구 (개인용 무료)
+- [Blender](https://www.blender.org/): 전문가급 3D 제작 제품군 (무료)
+- [Rhino](https://www.rhino3d.com/): 전문 3D 모델링 소프트웨어 (상업용, 교육용 라이선스 제공)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/obj.png" alt="OBJ 3D City Model Rendered in Rhino" width="600">
 </p>
 <p align="center">
-  <em>Example Output Exported in OBJ and Rendered in Rhino</em>
+  <em>OBJ로 내보낸 후 Rhino에서 렌더링한 출력 예시</em>
 </p>
 
-#### MagicaVoxel VOX Files:
+#### MagicaVoxel VOX 파일:
 
-[MagicaVoxel](https://ephtracy.github.io/) is a lightweight and user-friendly voxel art editor. It allows users to create, edit, and render voxel-based 3D models with an intuitive interface, making it perfect for modifying and visualizing voxelized city models. The software is free and available for Windows and Mac.
+[MagicaVoxel](https://ephtracy.github.io/)은 가볍고 사용자 친화적인 복셀 아트 편집기입니다. 직관적인 인터페이스로 복셀 기반 3D 모델을 생성, 편집 및 렌더링할 수 있어 복셀화된 도시 모델을 수정하고 시각화하는 데 적합합니다. 이 소프트웨어는 무료이며 Windows 및 Mac에서 사용할 수 있습니다.
 
 ```python
 from voxcity.exporter.magicavoxel import export_magicavoxel_vox
 
 output_path = "output"
 base_filename = "voxcity"
-# Pass the VoxCity object directly
+# VoxCity 객체 직접 전달
 export_magicavoxel_vox(voxcity, output_path, base_filename=base_filename)
 ```
 <p align="center">
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/vox.png" alt="Generated 3D City Model on MagicaVoxel GUI" width="600">
 </p>
 <p align="center">
-  <em>Example Output Exported in VOX and Rendered in MagicaVoxel</em>
+  <em>VOX로 내보낸 후 MagicaVoxel에서 렌더링한 출력 예시</em>
 </p>
 
-### 6. Additional Use Cases
+### 6. 추가 활용 사례
 
-#### Compute Solar Irradiance:
+#### 일사량(Solar Irradiance) 계산:
 
 ```python
 from voxcity.simulator.solar import get_global_solar_irradiance_using_epw
 
 solar_kwargs = {
-    "download_nearest_epw": True,  # Whether to automatically download nearest EPW weather file based on location from Climate.OneBuilding.Org
-    # "epw_file_path": "./output/new.york-downtown.manhattan.heli_ny_usa_1.epw",  # Path to EnergyPlus Weather (EPW) file containing climate data. Set if you already have an EPW file.
-    "calc_time": "01-01 12:00:00",  # Time for instantaneous calculation in format "MM-DD HH:MM:SS"
-    "view_point_height": 1.5,  # Height of view point in meters for calculating solar access. Default: 1.5 m
-    "tree_k": 0.6,    # Static extinction coefficient - controls how much sunlight is blocked by trees (higher = more blocking)
-    "tree_lad": 1.0,    # Leaf area density of trees - density of leaves/branches that affect shading (higher = denser foliage)
-    "colormap": 'magma',       # Matplotlib colormap for visualization. Default: 'viridis'
-    "obj_export": True,        # Whether to export results as 3D OBJ file
-    "output_directory": 'output/test',  # Directory for saving output files
-    "output_file_name": 'instantaneous_solar_irradiance',  # Base filename for outputs (without extension)
-    "alpha": 1.0,             # Transparency of visualization (0.0-1.0)
-    "vmin": 0,               # Minimum value for colormap scaling in visualization
-    # "vmax": 900,             # Maximum value for colormap scaling in visualization
+    "download_nearest_epw": True,  # Climate.OneBuilding.Org에서 위치 기반으로 가장 가까운 EPW 기상 파일을 자동으로 다운로드할지 여부
+    # "epw_file_path": "./output/new.york-downtown.manhattan.heli_ny_usa_1.epw",  # 기상 데이터를 포함하는 EnergyPlus Weather(EPW) 파일 경로. 이미 파일이 있는 경우 설정하세요.
+    "calc_time": "01-01 12:00:00",  # "MM-DD HH:MM:SS" 형식의 순간 계산 시간
+    "view_point_height": 1.5,  # 일사 접근성을 계산할 시점의 높이(미터). 기본값: 1.5 m
+    "tree_k": 0.6,    # 정적 소멸 계수 - 나무에 의해 햇빛이 차단되는 양을 조절 (높을수록 더 많이 차단)
+    "tree_lad": 1.0,    # 나무의 엽면적 밀도 - 그림자에 영향을 미치는 잎/가지의 밀도 (높을수록 무성한 잎)
+    "colormap": 'magma',       # 시각화를 위한 Matplotlib 컬러맵. 기본값: 'viridis'
+    "obj_export": True,        # 결과를 3D OBJ 파일로 내보낼지 여부
+    "output_directory": 'output/test',  # 출력 파일 저장 디렉토리
+    "output_file_name": 'instantaneous_solar_irradiance',  # 출력 기본 파일 이름 (확장자 제외)
+    "alpha": 1.0,             # 시각화 투명도 (0.0-1.0)
+    "vmin": 0,               # 시각화에서 컬러맵 배율의 최소값
+    # "vmax": 900,             # 시각화에서 컬러맵 배율의 최대값
 }
 
-# Compute global solar irradiance map (direct + diffuse radiation)
+# 전체 일사량 맵 계산 (직달 + 확산 복사)
 solar_grid = get_global_solar_irradiance_using_epw(
-    voxcity,                             # VoxCity object containing voxel data and metadata
-    calc_type='instantaneous',           # Calculate instantaneous irradiance at specified time
-    direct_normal_irradiance_scaling=1.0, # Scaling factor for direct solar radiation (1.0 = no scaling)
-    diffuse_irradiance_scaling=1.0,      # Scaling factor for diffuse solar radiation (1.0 = no scaling)
-    **solar_kwargs                       # Pass all the parameters defined above
+    voxcity,                             # 복셀 데이터 및 메타데이터를 포함하는 VoxCity 객체
+    calc_type='instantaneous',           # 지정된 시점의 순간 일사량 계산
+    direct_normal_irradiance_scaling=1.0, # 직달 일사량 보정 계수 (1.0 = 보정 없음)
+    diffuse_irradiance_scaling=1.0,      # 확산 일사량 보정 계수 (1.0 = 보정 없음)
+    **solar_kwargs                       # 위에서 정의한 모든 매개변수 전달
 )
 
-# Adjust parameters for cumulative calculation
-solar_kwargs["start_time"] = "01-01 01:00:00" # Start time for cumulative calculation
-solar_kwargs["end_time"] = "01-31 23:00:00" # End time for cumulative calculation
-solar_kwargs["output_file_name"] = 'cumulative_solar_irradiance'  # Base filename for outputs (without extension)
+# 누적 계산을 위한 매개변수 조정
+solar_kwargs["start_time"] = "01-01 01:00:00" # 누적 계산 시작 시간
+solar_kwargs["end_time"] = "01-31 23:00:00" # 누적 계산 종료 시간
+solar_kwargs["output_file_name"] = 'cumulative_solar_irradiance'  # 출력 기본 파일 이름 (확장자 제외)
 
-# Calculate cumulative solar irradiance over the specified time period
+# 지정된 기간 동안의 누적 일사량 계산
 cum_solar_grid = get_global_solar_irradiance_using_epw(
-    voxcity,                             # VoxCity object containing voxel data and metadata
-    calc_type='cumulative',              # Calculate cumulative irradiance over time period instead of instantaneous
-    direct_normal_irradiance_scaling=1.0, # Scaling factor for direct solar radiation (1.0 = no scaling)
-    diffuse_irradiance_scaling=1.0,      # Scaling factor for diffuse solar radiation (1.0 = no scaling)
-    **solar_kwargs                       # Pass all the parameters defined above
+    voxcity,                             # 복셀 데이터 및 메타데이터를 포함하는 VoxCity 객체
+    calc_type='cumulative',              # 순간값이 아닌 기간 동안의 누적 일사량 계산
+    direct_normal_irradiance_scaling=1.0, # 직달 일사량 보정 계수 (1.0 = 보정 없음)
+    diffuse_irradiance_scaling=1.0,      # 확산 일사량 보정 계수 (1.0 = 보정 없음)
+    **solar_kwargs                       # 위에서 정의한 모든 매개변수 전달
 )
 ```
 
@@ -381,52 +372,52 @@ cum_solar_grid = get_global_solar_irradiance_using_epw(
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/solar.png" alt="Solar Irradiance Maps Rendered in Rhino" width="800">
 </p>
 <p align="center">
-  <em>Example Results Saved as OBJ and Rendered in Rhino</em>
+  <em>OBJ로 저장한 후 Rhino에서 렌더링한 결과 예시</em>
 </p>
 
-#### Compute Green View Index (GVI) and Sky View Index (SVI):
+#### 녹시율(GVI) 및 천공율(SVI) 계산:
 
 ```python
 from voxcity.simulator.view import get_view_index
 
 view_kwargs = {
-    "view_point_height": 1.5,      # Height of observer viewpoint in meters
-    "colormap": "viridis",         # Colormap for visualization
-    "obj_export": True,            # Whether to export as OBJ file
-    "output_directory": "output",  # Directory to save output files
-    "output_file_name": "gvi"      # Base filename for outputs
+    "view_point_height": 1.5,      # 관찰자 시점 높이 (미터 단위)
+    "colormap": "viridis",         # 시각화용 컬러맵
+    "obj_export": True,            # OBJ 파일 내보내기 여부
+    "output_directory": "output",  # 출력 파일 저장 디렉토리
+    "output_file_name": "gvi"      # 출력 기본 파일 이름
 }
 
-# Compute Green View Index using mode='green'
+# mode='green'을 사용하여 녹시율(GVI) 계산
 gvi_grid = get_view_index(voxcity, mode='green', **view_kwargs)
 
-# Adjust parameters for Sky View Index
+# 천공율(SVI)을 위한 매개변수 조정
 view_kwargs["colormap"] = "BuPu_r"
 view_kwargs["output_file_name"] = "svi"
-view_kwargs["elevation_min_degrees"] = 0 # Start ray-tracing from the horizon
+view_kwargs["elevation_min_degrees"] = 0 # 지평선부터 레이 트레이싱 시작
 
-# Compute Sky View Index using mode='sky'
+# mode='sky'를 사용하여 천공율(SVI) 계산
 svi_grid = get_view_index(voxcity, mode='sky', **view_kwargs)
 ```
 <p align="center">
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/view_index.png" alt="View Index Maps Rendered in Rhino" width="800">
 </p>
 <p align="center">
-  <em>Example Results Saved as OBJ and Rendered in Rhino</em>
+  <em>OBJ로 저장한 후 Rhino에서 렌더링한 결과 예시</em>
 </p>
 
-#### Landmark Visibility Map:
+#### 랜드마크 가시성 맵:
 
 ```python
 from voxcity.simulator.view import get_landmark_visibility_map
 
-# Dictionary of parameters for landmark visibility analysis
+# 랜드마크 가시성 분석 매개변수 딕셔너리
 landmark_kwargs = {
-    "view_point_height": 1.5,                 # Height of observer viewpoint in meters
-    "colormap": "cool",                       # Colormap for visualization
-    "obj_export": True,                       # Whether to export as OBJ file
-    "output_directory": "output",             # Directory to save output files
-    "output_file_name": "landmark_visibility" # Base filename for outputs
+    "view_point_height": 1.5,                 # 관찰자 시점 높이 (미터 단위)
+    "colormap": "cool",                       # 시각화용 컬러맵
+    "obj_export": True,                       # OBJ 파일 내보내기 여부
+    "output_directory": "output",             # 출력 파일 저장 디렉토리
+    "output_file_name": "landmark_visibility" # 출력 기본 파일 이름
 }
 landmark_vis_map, _ = get_landmark_visibility_map(voxcity, voxcity.extras.get('building_gdf'), **landmark_kwargs)
 ```
@@ -434,31 +425,31 @@ landmark_vis_map, _ = get_landmark_visibility_map(voxcity, voxcity.extras.get('b
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/landmark.png" alt="Landmark Visibility Map Rendered in Rhino" width="500">
 </p>
 <p align="center">
-  <em>Example Result Saved as OBJ and Rendered in Rhino</em>
+  <em>OBJ로 저장한 후 Rhino에서 렌더링한 결과 예시</em>
 </p>
 
-#### Network Analysis:
+#### 네트워크 분석:
 
 ```python
 from voxcity.geoprocessor.network import get_network_values
 
 network_kwargs = {
-    "network_type": "walk",        # Type of network to download from OSM (walk, drive, all, etc.)
-    "colormap": "magma",          # Matplotlib colormap for visualization
-    "vis_graph": True,            # Whether to display the network visualization
-    "vmin": 0.0,                  # Minimum value for color scaling
-    "vmax": 600000,               # Maximum value for color scaling
-    "edge_width": 2,              # Width of network edges in visualization
-    "alpha": 0.8,                 # Transparency of network edges
-    "zoom": 16                    # Zoom level for basemap
+    "network_type": "walk",        # OSM에서 다운로드할 네트워크 유형 (walk, drive, all 등)
+    "colormap": "magma",          # 시각화용 Matplotlib 컬러맵
+    "vis_graph": True,            # 네트워크 시각화 표시 여부
+    "vmin": 0.0,                  # 색상 배율의 최소값
+    "vmax": 600000,               # 색상 배율의 최대값
+    "edge_width": 2,              # 시각화 시 네트워크 에지 너비
+    "alpha": 0.8,                 # 네트워크 에지의 투명도
+    "zoom": 16                    # 배경 지도의 줌 레벨
 }
 
 G, edge_gdf = get_network_values(
-    cum_solar_grid,               # Grid of cumulative solar irradiance values
-    rectangle_vertices,           # Coordinates defining simulation domain boundary
-    meshsize,                     # Size of each grid cell in meters
-    value_name='Cumulative Global Solar Irradiance (W/m²·hour)',  # Label for values in visualization
-    **network_kwargs              # Additional visualization and network parameters
+    cum_solar_grid,               # 누적 일사량 값의 그리드
+    rectangle_vertices,           # 시뮬레이션 도메인 경계를 정의하는 좌표
+    meshsize,                     # 각 그리드 셀의 크기 (미터 단위)
+    value_name='Cumulative Global Solar Irradiance (W/m²·hour)',  # 시각화에서의 값 레이블
+    **network_kwargs              # 추가적인 시각화 및 네트워크 매개변수
 )
 ```
 
@@ -466,66 +457,66 @@ G, edge_gdf = get_network_values(
   <img src="https://raw.githubusercontent.com/kunifujiwara/VoxCity/main/images/network.png" alt="Example of Graph Output" width="500">
 </p>
 <p align="center">
-  <em>Cumulative Global Solar Irradiance (kW/m²·hour) on Road Network</em>
+  <em>도로 네트워크상에서의 연간 누적 전체 일사량 (kW/m²·hour)</em>
 </p>
 
-## VoxCity Standard Land Cover Classes (used in voxel grids)
+## VoxCity 표준 토지 피복 클래스 (복셀 그리드에 사용됨)
 
-| Index | Class | Index | Class |
+| 인덱스 | 클래스 | 인덱스 | 클래스 |
 |:-----:|-------|:-----:|-------|
-| 1 | Bareland | 8 | Mangrove |
-| 2 | Rangeland | 9 | Water |
-| 3 | Shrub | 10 | Snow and ice |
-| 4 | Agriculture land | 11 | Developed space |
-| 5 | Tree | 12 | Road |
-| 6 | Moss and lichen | 13 | Building |
-| 7 | Wet land | 14 | No Data |
+| 1 | 나대지 (Bareland) | 8 | 망그로브 (Mangrove) |
+| 2 | 목초지 (Rangeland) | 9 | 수역 (Water) |
+| 3 | 관목 (Shrub) | 10 | 눈과 얼음 (Snow and ice) |
+| 4 | 농경지 (Agriculture land) | 11 | 개발지 (Developed space) |
+| 5 | 나무 (Tree) | 12 | 도로 (Road) |
+| 6 | 지의류 및 이끼 (Moss and lichen) | 13 | 건물 (Building) |
+| 7 | 습지 (Wet land) | 14 | 데이터 없음 (No Data) |
 
-## References of Data Sources
+## 데이터 소스 참고 문헌 (References of Data Sources)
 
-### Building 
+### 건물 (Building)
 
-| Dataset | Spatial Coverage | Source/Data Acquisition |
+| 데이터셋 | 공간 범위 | 출처 / 데이터 획득 |
 |---------|------------------|------------------------|
-| [OpenStreetMap](https://www.openstreetmap.org) | Worldwide (24% completeness in city centers) | Volunteered / updated continuously |
-| [Microsoft Building Footprints](https://github.com/microsoft/GlobalMLBuildingFootprints) | North America, Europe, Australia | Prediction from satellite or aerial imagery / 2018-2019 for majority of the input imagery |
-| [Open Buildings 2.5D Temporal Dataset](https://sites.research.google/gr/open-buildings/temporal/) | Africa, Latin America, and South and Southeast Asia | Prediction from satellite imagery / 2016-2023 |
-| [EUBUCCO v0.1](https://eubucco.com/) | 27 EU countries and Switzerland (378 regions and 40,829 cities) | OpenStreetMap, government datasets / 2003-2021 (majority is after 2019) |
-| [UT-GLOBUS](https://zenodo.org/records/11156602) | Worldwide (more than 1200 cities or locales) | Prediction from building footprints, population, spaceborne nDSM / not provided |
-| [Overture Maps](https://overturemaps.org/) | Worldwide | OpenStreetMap, Esri Community Maps Program, Google Open Buildings, etc. / updated continuously |
+| [OpenStreetMap](https://www.openstreetmap.org) | 전 세계 (도심지 약 24% 완성도) | 자원봉사자 참여 / 지속적 업데이트 |
+| [Microsoft Building Footprints](https://github.com/microsoft/GlobalMLBuildingFootprints) | 북미, 유럽, 호주 | 위성 또는 항공 영상 기반 예측 / 대다수 영상이 2018-2019년 기준 |
+| [Open Buildings 2.5D Temporal Dataset](https://sites.research.google/gr/open-buildings/temporal/) | 아프리카, 라틴 아메리카, 남부 및 동남아시아 | 위성 영상 기반 예측 / 2016-2023 |
+| [EUBUCCO v0.1](https://eubucco.com/) | EU 27개국 및 스위스 (378개 지역, 40,829개 도시) | OSM, 정부 데이터셋 / 2003-2021 (대부분 2019년 이후) |
+| [UT-GLOBUS](https://zenodo.org/records/11156602) | 전 세계 (1,200개 이상의 도시 및 지역) | 건물 풋프린트, 인구, 위성 nDSM 기반 예측 / 미제공 |
+| [Overture Maps](https://overturemaps.org/) | 전 세계 | OSM, Esri Community Maps, Google Open Buildings 등 / 지속적 업데이트 |
 
-### Tree Canopy Height
+### 수관 높이 (Tree Canopy Height)
 
-| Dataset | Coverage | Resolution | Source/Data Acquisition |
+| 데이터셋 | 범위 | 해상도 | 출처 / 데이터 획득 |
 |---------|-----------|------------|------------------------|
-| [High Resolution 1m Global Canopy Height Maps](https://sustainability.atmeta.com/blog/2024/04/22/using-artificial-intelligence-to-map-the-earths-forests/) | Worldwide | 1 m | Prediction from satellite imagery / 2009 and 2020 (80% are 2018-2020) |
-| [ETH Global Sentinel-2 10m Canopy Height (2020)](https://langnico.github.io/globalcanopyheight/) | Worldwide | 10 m | Prediction from satellite imagery / 2020 |
+| [High Resolution 1m Global Canopy Height Maps](https://sustainability.atmeta.com/blog/2024/04/22/using-artificial-intelligence-to-map-the-earths-forests/) | 전 세계 | 1 m | 위성 영상 기반 예측 / 2009 및 2020 (80%가 2018-2020년) |
+| [ETH Global Sentinel-2 10m Canopy Height (2020)](https://langnico.github.io/globalcanopyheight/) | 전 세계 | 10 m | 위성 영상 기반 예측 / 2020 |
 
-### Land Cover
+### 토지 피복 (Land Cover)
 
-| Dataset | Spatial Coverage | Resolution | Source/Data Acquisition |
+| 데이터셋 | 공간 범위 | 해상도 | 출처 / 데이터 획득 |
 |---------|------------------|------------|----------------------|
-| [ESA World Cover 10m 2021 V200](https://zenodo.org/records/7254221) | Worldwide | 10 m | Prediction from satellite imagery / 2021 |
-| [ESRI 10m Annual Land Cover (2017-2023)](https://www.arcgis.com/home/item.html?id=cfcb7609de5f478eb7666240902d4d3d) | Worldwide | 10 m | Prediction from satellite imagery / 2017-2023 |
-| [Dynamic World V1](https://dynamicworld.app) | Worldwide | 10 m | Prediction from satellite imagery / updated continuously |
-| [OpenStreetMap](https://www.openstreetmap.org) | Worldwide | - (Vector) | Volunteered / updated continuously |
-| [OpenEarthMap Japan](https://www.open-earth-map.org/demo/Japan/leaflet.html) | Japan | ~1 m | Prediction from aerial imagery / 1974-2022 (mostly after 2018 in major cities) |
-| [UrbanWatch](https://urbanwatch.charlotte.edu/) | 22 major cities in the US | 1 m | Prediction from aerial imagery / 2014–2017 |
+| [ESA World Cover 10m 2021 V200](https://zenodo.org/records/7254221) | 전 세계 | 10 m | 위성 영상 기반 예측 / 2021 |
+| [ESRI 10m Annual Land Cover (2017-2023)](https://www.arcgis.com/home/item.html?id=cfcb7609de5f478eb7666240902d4d3d) | 전 세계 | 10 m | 위성 영상 기반 예측 / 2017-2023 |
+| [Dynamic World V1](https://dynamicworld.app) | 전 세계 | 10 m | 위성 영상 기반 예측 / 지속적 업데이트 |
+| [OpenStreetMap](https://www.openstreetmap.org) | 전 세계 | - (벡터) | 자원봉사자 참여 / 지속적 업데이트 |
+| [OpenEarthMap Japan](https://www.open-earth-map.org/demo/Japan/leaflet.html) | 일본 | ~1 m | 항공 영상 기반 예측 / 1974-2022 (주요 도시는 대부분 2018년 이후) |
+| [UrbanWatch](https://urbanwatch.charlotte.edu/) | 미국 22개 주요 도시 | 1 m | 항공 영상 기반 예측 / 2014–2017 |
 
-### Terrain Elevation
+### 지형 고도 (Terrain Elevation)
 
-| Dataset | Coverage | Resolution | Source/Data Acquisition |
+| 데이터셋 | 범위 | 해상도 | 출처 / 데이터 획득 |
 |---------|-----------|------------|------------------------|
-| [FABDEM](https://doi.org/10.5523/bris.25wfy0f9ukoge2gs7a5mqpq2j7) | Worldwide | 30 m | Correction of Copernicus DEM using canopy height and building footprints data / 2011-2015 (Copernicus DEM) |
-| [DeltaDTM](https://gee-community-catalog.org/projects/delta_dtm/) | Worldwide (Only for coastal areas below 10m + mean sea level) | 30 m | Copernicus DEM, spaceborne LiDAR / 2011-2015 (Copernicus DEM) |
-| [USGS 3DEP 1m DEM](https://www.usgs.gov/3d-elevation-program) | United States | 1 m | Aerial LiDAR / 2004-2024 (mostly after 2015) |
-| [England 1m Composite DTM](https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc) | England | 1 m | Aerial LiDAR / 2000-2022 |
-| [Australian 5M DEM](https://ecat.ga.gov.au/geonetwork/srv/eng/catalog.search#/metadata/89644) | Australia | 5 m | Aerial LiDAR / 2001-2015 |
-| [RGE Alti](https://geoservices.ign.fr/rgealti) | France | 1 m | Aerial LiDAR |
+| [FABDEM](https://doi.org/10.5523/bris.25wfy0f9ukoge2gs7a5mqpq2j7) | 전 세계 | 30 m | 수관 높이 및 건물 풋프린트를 사용한 Copernicus DEM 보정 / 2011-2015 (Copernicus DEM) |
+| [DeltaDTM](https://gee-community-catalog.org/projects/delta_dtm/) | 전 세계 (고도 10m 이하 해안 지역 + 평균 해수면) | 30 m | Copernicus DEM, 위성 LiDAR / 2011-2015 (Copernicus DEM) |
+| [USGS 3DEP 1m DEM](https://www.usgs.gov/3d-elevation-program) | 미국 | 1 m | 항공 LiDAR / 2004-2024 (대부분 2015년 이후) |
+| [England 1m Composite DTM](https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc) | 영국 잉글랜드 | 1 m | 항공 LiDAR / 2000-2022 |
+| [Australian 5M DEM](https://ecat.ga.gov.au/geonetwork/srv/eng/catalog.search#/metadata/89644) | 호주 | 5 m | 항공 LiDAR / 2001-2015 |
+| [RGE Alti](https://geoservices.ign.fr/rgealti) | 프랑스 | 1 m | 항공 LiDAR |
 
-## Citation
+## 인용 (Citation)
 
-Please cite the [paper](https://doi.org/10.1016/j.compenvurbsys.2025.102366) if you use `voxcity` in a scientific publication:
+학술 간행물에서 `voxcity`를 사용하는 경우 다음 [논문](https://doi.org/10.1016/j.compenvurbsys.2025.102366)을 인용해 주세요:
 
 Fujiwara K, Tsurumi R, Kiyono T, Fan Z, Liang X, Lei B, Yap W, Ito K, Biljecki F., 2026. VoxCity: A Seamless Framework for Open Geospatial Data Integration, Grid-Based Semantic 3D City Model Generation, and Urban Environment Simulation. Computers, Environment and Urban Systems, 123, p.102366. https://doi.org/10.1016/j.compenvurbsys.2025.102366
 
@@ -539,14 +530,13 @@ Fujiwara K, Tsurumi R, Kiyono T, Fan Z, Liang X, Lei B, Yap W, Ito K, Biljecki F
   year = {2026},
   doi = {10.1016/j.compenvurbsys.2025.102366}
 }
-
 ```
 
-## Credit
+## 공로 (Credit)
 
- - Tutorial video by <a href="https://ual.sg/author/xiucheng-liang/">Xiucheng Liang</a>
+ - 튜토리얼 비디오 제작: <a href="https://ual.sg/author/xiucheng-liang/">Xiucheng Liang</a>
 
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [`audreyr/cookiecutter-pypackage`](https://github.com/audreyr/cookiecutter-pypackage) project template.
+이 패키지는 [Cookiecutter](https://github.com/audreyr/cookiecutter)와 [`audreyr/cookiecutter-pypackage`](https://github.com/audreyr/cookiecutter-pypackage) 프로젝트 템플릿으로 생성되었습니다.
 
 --------------------------------------------------------------------------------
 <br>
@@ -556,4 +546,3 @@ This package was created with [Cookiecutter](https://github.com/audreyr/cookiecu
     <img src="https://raw.githubusercontent.com/winstonyym/urbanity/main/images/ualsg.jpeg" width = 55% alt="Logo">
   </a>
 </p>
-

@@ -24,7 +24,8 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 import math
 import numpy as np
-from osgeo import gdal, osr
+import rasterio
+from rasterio.transform import from_origin
 import pyproj
 
 __all__ = ["save_oemj_as_geotiff"]
@@ -305,23 +306,24 @@ def save_as_geotiff(image, polygon, zoom, bbox, bounds, output_path):
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
 
-    # Create GeoTIFF
-    driver = gdal.GetDriverByName('GTiff')
-    dataset = driver.Create(output_path, image.width, image.height, 3, gdal.GDT_Byte)
+    # Create transform using rasterio
+    transform = from_origin(upper_left_x, upper_left_y, pixel_size_x, pixel_size_y)
     
-    # Set geotransform and projection
-    dataset.SetGeoTransform((upper_left_x, pixel_size_x, 0, upper_left_y, 0, -pixel_size_y))
-    
-    srs = osr.SpatialReference()
-    srs.ImportFromEPSG(3857)  # Web Mercator
-    dataset.SetProjection(srs.ExportToWkt())
-    
-    # Write image data
-    for i in range(3):
-        band = dataset.GetRasterBand(i + 1)
-        band.WriteArray(np.array(image)[:,:,i])
-    
-    dataset = None
+    # Write image data using rasterio
+    data = np.array(image)
+    with rasterio.open(
+        output_path,
+        'w',
+        driver='GTiff',
+        height=image.height,
+        width=image.width,
+        count=3,
+        dtype=rasterio.ubyte,
+        crs='EPSG:3857',
+        transform=transform,
+    ) as dataset:
+        for i in range(3):
+            dataset.write(data[:, :, i], i + 1)
 
 def save_oemj_as_geotiff(polygon, filepath, zoom=16, *, ssl_verify=True, allow_insecure_ssl=False, allow_http_fallback=False, timeout_s=30):
     """Download and save OpenEarthMap Japan imagery as a georeferenced GeoTIFF file.
